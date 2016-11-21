@@ -12,9 +12,9 @@ registerDataModels()
 {
   auto ret = std::make_unique<DataModelRegistry>();
 
-  ret->registerModel<ImageShowModel>();
+  ret->registerModel(std::make_unique<ImageShowModel>());
 
-  ret->registerModel<ImageLoaderModel>();
+  ret->registerModel(std::make_unique<ImageLoaderModel>());
 
   return ret;
 }

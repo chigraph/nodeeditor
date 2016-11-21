@@ -31,6 +31,11 @@ public:
   static QString
   name() { return QString("ImageLoaderModel"); }
 
+  std::unique_ptr<NodeDataModel> 
+  clone() override {
+    return std::unique_ptr<ImageLoaderModel>(new ImageLoaderModel);
+  }
+  
 public:
 
   void

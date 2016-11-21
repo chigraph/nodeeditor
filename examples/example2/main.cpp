@@ -14,9 +14,9 @@ static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
   auto ret = std::make_unique<DataModelRegistry>();
-  ret->registerModel<TextSourceDataModel>();
+  ret->registerModel(std::make_unique<TextSourceDataModel>());
 
-  ret->registerModel<TextDisplayDataModel>();
+  ret->registerModel(std::make_unique<TextSourceDataModel>());
 
   return ret;
 }

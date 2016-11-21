@@ -28,6 +28,11 @@ public:
   name()
   { return QString("Multiplication"); }
 
+  std::unique_ptr<NodeDataModel> 
+  clone() override {
+    return std::unique_ptr<MultiplicationModel>(new MultiplicationModel);
+  }
+  
 public:
 
   void

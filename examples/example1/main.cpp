@@ -12,7 +12,7 @@ static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
   auto ret = std::make_unique<DataModelRegistry>();
-  ret->registerModel<NaiveDataModel>();
+  ret->registerModel(std::make_unique<NaiveDataModel>());
 
   /*
    We could have more models registered.

@@ -19,17 +19,18 @@ static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
   auto ret = std::make_unique<DataModelRegistry>();
-  ret->registerModel<NumberSourceDataModel>();
+  
+  ret->registerModel(std::make_unique<NumberSourceDataModel>());
 
-  ret->registerModel<NumberDisplayDataModel>();
+  ret->registerModel(std::make_unique<NumberDisplayDataModel>());
 
-  ret->registerModel<AdditionModel>();
+  ret->registerModel(std::make_unique<AdditionModel>());
 
-  ret->registerModel<SubtractionModel>();
+  ret->registerModel(std::make_unique<SubtractionModel>());
 
-  ret->registerModel<MultiplicationModel>();
+  ret->registerModel(std::make_unique<MultiplicationModel>());
 
-  ret->registerModel<DivisionModel>();
+  ret->registerModel(std::make_unique<DivisionModel>());
 
   return ret;
 }
