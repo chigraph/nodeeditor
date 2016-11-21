@@ -9,6 +9,7 @@
 
 #include "Connection.hpp"
 #include "Export.hpp"
+#include "DataModelRegistry.hpp"
 
 namespace std
 {
@@ -36,7 +37,7 @@ class NODE_EDITOR_PUBLIC FlowScene
 {
 public:
 
-  FlowScene();
+  FlowScene(std::unique_ptr<DataModelRegistry> registry = nullptr);
 
   ~FlowScene();
 
@@ -70,6 +71,16 @@ public:
 
   void
   load();
+  
+  DataModelRegistry&
+  registry() {
+    return *_registry;
+  }
+  
+  void
+  setRegistry(std::unique_ptr<DataModelRegistry> registry) {
+    _registry = std::move(registry);
+  }
 
 private:
 
@@ -78,6 +89,7 @@ private:
 
   std::unordered_map<QUuid, SharedConnection> _connections;
   std::unordered_map<QUuid, SharedNode>       _nodes;
+  std::unique_ptr<DataModelRegistry>          _registry;
 };
 
 std::shared_ptr<Node>

@@ -7,25 +7,24 @@
 #include "ImageShowModel.hpp"
 #include "ImageLoaderModel.hpp"
 
-static bool
+static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
-  DataModelRegistry::registerModel<ImageShowModel>();
+  auto ret = std::make_unique<DataModelRegistry>();
 
-  DataModelRegistry::registerModel<ImageLoaderModel>();
+  ret->registerModel<ImageShowModel>();
 
-  return true;
+  ret->registerModel<ImageLoaderModel>();
+
+  return ret;
 }
-
-
-static bool registerOK = registerDataModels();
 
 int
 main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  FlowScene scene;
+  FlowScene scene(registerDataModels());
 
   FlowView view(&scene);
 

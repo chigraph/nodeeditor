@@ -15,26 +15,25 @@
 #include "MultiplicationModel.hpp"
 #include "DivisionModel.hpp"
 
-static bool
+static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
-  DataModelRegistry::registerModel<NumberSourceDataModel>();
+  auto ret = std::make_unique<DataModelRegistry>();
+  ret->registerModel<NumberSourceDataModel>();
 
-  DataModelRegistry::registerModel<NumberDisplayDataModel>();
+  ret->registerModel<NumberDisplayDataModel>();
 
-  DataModelRegistry::registerModel<AdditionModel>();
+  ret->registerModel<AdditionModel>();
 
-  DataModelRegistry::registerModel<SubtractionModel>();
+  ret->registerModel<SubtractionModel>();
 
-  DataModelRegistry::registerModel<MultiplicationModel>();
+  ret->registerModel<MultiplicationModel>();
 
-  DataModelRegistry::registerModel<DivisionModel>();
+  ret->registerModel<DivisionModel>();
 
-  return true;
+  return ret;
 }
 
-
-static bool registerOK = registerDataModels();
 
 int
 main(int argc, char *argv[])
@@ -50,7 +49,7 @@ main(int argc, char *argv[])
   QVBoxLayout *l = new QVBoxLayout(&mainWidget);
 
   l->addWidget(menuBar);
-  auto scene = new FlowScene;
+  auto scene = new FlowScene(registerDataModels());
   l->addWidget(new FlowView(scene));
   l->setContentsMargins(0, 0, 0, 0);
   l->setSpacing(0);

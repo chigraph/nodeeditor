@@ -115,7 +115,7 @@ restoreNode(Properties const &p)
 
   p.get("model_name", &modelName);
 
-  auto const &models = DataModelRegistry::registeredModels();
+  auto const &models = _registry->registeredModels();
   auto it = models.find(modelName);
 
   if (it == models.end())
@@ -281,7 +281,7 @@ load()
 
 
 FlowScene::
-FlowScene()
+FlowScene(std::unique_ptr<DataModelRegistry> registry) : _registry{std::move(registry)}
 {
   setItemIndexMethod(QGraphicsScene::NoIndex);
 }

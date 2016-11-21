@@ -46,7 +46,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-/// Class uses static map for storing models (name, model)
+/// Class uses map for storing models (name, model)
 class NODE_EDITOR_PUBLIC DataModelRegistry
 {
 
@@ -59,7 +59,7 @@ public:
 public:
 
   template<typename ModelType>
-  static void
+  void
   registerModel(QString menuName = QString())
   {
     QString const name = ModelType::name();
@@ -73,13 +73,13 @@ public:
     }
   }
 
-  static std::unique_ptr<NodeDataModel>
+  std::unique_ptr<NodeDataModel>
   create(QString const &modelName);
 
-  static RegisteredModelsMap const &
+  RegisteredModelsMap const &
   registeredModels();
 
 private:
 
-  static RegisteredModelsMap _registeredModels;
+  RegisteredModelsMap _registeredModels;
 };

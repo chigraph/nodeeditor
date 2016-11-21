@@ -8,10 +8,11 @@
 #include "models.hpp"
 
 
-static bool
+static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
-  DataModelRegistry::registerModel<NaiveDataModel>();
+  auto ret = std::make_unique<DataModelRegistry>();
+  ret->registerModel<NaiveDataModel>();
 
   /*
    We could have more models registered.
@@ -22,10 +23,8 @@ registerDataModels()
 
   */
 
-  return true;
+  return ret;
 }
-
-static bool registerOK = registerDataModels();
 
 
 //------------------------------------------------------------------------------
@@ -35,7 +34,7 @@ main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
 
-  FlowScene scene;
+  FlowScene scene(registerDataModels());
 
   FlowView view(&scene);
 

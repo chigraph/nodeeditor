@@ -10,24 +10,23 @@
 #include "TextDisplayDataModel.hpp"
 
 
-static bool
+static std::unique_ptr<DataModelRegistry>
 registerDataModels()
 {
-  DataModelRegistry::registerModel<TextSourceDataModel>();
+  auto ret = std::make_unique<DataModelRegistry>();
+  ret->registerModel<TextSourceDataModel>();
 
-  DataModelRegistry::registerModel<TextDisplayDataModel>();
+  ret->registerModel<TextDisplayDataModel>();
 
-  return true;
+  return ret;
 }
-
-static bool registerOK = registerDataModels();
 
 int
 main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  FlowScene scene;
+  FlowScene scene(registerDataModels());
 
   FlowView view(&scene);
 
