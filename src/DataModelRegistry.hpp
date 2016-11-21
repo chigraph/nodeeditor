@@ -57,6 +57,7 @@ public:
           std::unordered_map<QString, RegistryItemPtr>;
 
   DataModelRegistry() = default;
+  ~DataModelRegistry() = default;
 
   DataModelRegistry(const DataModelRegistry&) = delete;
   DataModelRegistry(DataModelRegistry&&) = default;
