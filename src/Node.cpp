@@ -162,7 +162,7 @@ nodeState()
 }
 
 
-NodeDataModel* const
+NodeDataModel*
 Node::
 nodeDataModel() const
 {
@@ -177,9 +177,6 @@ propagateData(std::shared_ptr<NodeData> nodeData,
 {
   _nodeDataModel->setInData(nodeData, inPortIndex);
 
-  _nodeGeometry.recalculateSize();
-  _nodeGraphicsObject->setGeometryChanged();
-  _nodeGraphicsObject->update();
 }
 
 

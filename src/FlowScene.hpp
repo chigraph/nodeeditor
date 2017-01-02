@@ -47,7 +47,7 @@ public:
   restoreConnection(Properties const &p);
 
   void
-  deleteConnection(std::shared_ptr<Connection> connection);
+  deleteConnection(Connection& connection);
 
   std::shared_ptr<Node>
   createNode(std::unique_ptr<NodeDataModel> && dataModel);
@@ -77,9 +77,9 @@ public:
 
 signals:
   void
-  nodeCreated(Node& n);
+  nodeCreated(const std::shared_ptr<Node>& n);
   void
-  nodeDeleted(Node& n);
+  nodeDeleted(const std::shared_ptr<Node>& n);
 
   void
   connectionCreated(Connection& c);
