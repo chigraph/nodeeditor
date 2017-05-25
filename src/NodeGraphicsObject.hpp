@@ -33,6 +33,9 @@ public:
   Node&
   node();
 
+  Node const&
+  node() const;
+
   QRectF
   boundingRect() const override;
 
@@ -48,6 +51,9 @@ public:
 
   int
   type() const override { return Type; }
+
+  void
+  lock(bool locked);
 
 protected:
   void
@@ -89,6 +95,8 @@ private:
   FlowScene & _scene;
 
   Node& _node;
+
+  bool _locked;
 
   // either nullptr or owned by parent QGraphicsItem
   QGraphicsProxyWidget * _proxyWidget;
