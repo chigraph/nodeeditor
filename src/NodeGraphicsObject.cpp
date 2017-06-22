@@ -12,21 +12,21 @@
 #include "FlowScene.hpp"
 #include "NodePainter.hpp"
 
-#include "Node.hpp"
-#include "NodeDataModel.hpp"
 #include "NodeConnectionInteraction.hpp"
 
 #include "StyleCollection.hpp"
 
-using QtNodes::NodeGraphicsObject;
-using QtNodes::Node;
-using QtNodes::FlowScene;
+#include "NodeIndex.hpp"
+#include "FlowSceneModel.hpp"
+
+namespace QtNodes {
 
 NodeGraphicsObject::
-NodeGraphicsObject(FlowScene &scene,
-                   Node& node)
+NodeGraphicsObject(FlowScene& scene, const NodeIndex& index)
   : _scene(scene)
-  , _node(node)
+  , _nodeIndex(index)
+  , _geometry(index)
+  , _state(index)
   , _proxyWidget(nullptr)
   , _locked(false)
 {
@@ -59,9 +59,16 @@ NodeGraphicsObject(FlowScene &scene,
 
   embedQWidget();
 
-  // connect to the move signals to emit the move signals in FlowScene
+  // connect to the move signals
   auto onMoveSlot = [this] {
-    _scene.nodeMoved(_node, pos());
+    
+    // ask the model to move it
+    if (!_nodeIndex.model()->moveNode(_nodeIndex, pos())) {
+      // set the location back
+      setPos(_nodeIndex.model()->nodeLocation(_nodeIndex));
+      moveConnections();
+    }
+    
   };
   connect(this, &QGraphicsObject::xChanged, this, onMoveSlot);
   connect(this, &QGraphicsObject::yChanged, this, onMoveSlot);
@@ -75,28 +82,31 @@ NodeGraphicsObject::
 }
 
 
-Node&
+NodeIndex
 NodeGraphicsObject::
-node()
+index() const
 {
-  return _node;
+  return _nodeIndex;
 }
 
-
-Node const&
+NodeGeometry&
 NodeGraphicsObject::
-node() const
-{
-  return _node;
+geometry() {
+  return _geometry;
+}
+
+NodeState&
+NodeGraphicsObject::
+nodeState() {
+  return _state;
 }
 
 void
 NodeGraphicsObject::
 embedQWidget()
 {
-  NodeGeometry & geom = _node.nodeGeometry();
 
-  if (auto w = _node.nodeDataModel()->embeddedWidget())
+  if (auto w = _nodeIndex.model()->nodeWidget(_nodeIndex))
   {
     _proxyWidget = new QGraphicsProxyWidget(this);
 
@@ -104,9 +114,9 @@ embedQWidget()
 
     _proxyWidget->setPreferredWidth(5);
 
-    geom.recalculateSize();
+    _geometry.recalculateSize();
 
-    _proxyWidget->setPos(geom.widgetPosition());
+    _proxyWidget->setPos(_geometry.widgetPosition());
 
     update();
 
@@ -120,7 +130,7 @@ QRectF
 NodeGraphicsObject::
 boundingRect() const
 {
-  return _node.nodeGeometry().boundingRect();
+  return _geometry.boundingRect();
 }
 
 
@@ -136,14 +146,11 @@ void
 NodeGraphicsObject::
 moveConnections() const
 {
-
-  NodeState const & nodeState = _node.nodeState();
-
   auto moveConnections =
     [&](PortType portType)
     {
       auto const & connectionEntries =
-        nodeState.getEntries(portType);
+        _state.getEntries(portType);
 
       for (auto const & connections : connectionEntries)
       {
@@ -399,3 +406,5 @@ mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
   _scene.nodeDoubleClicked(node());
 }
+
+} // namespace QtNodes

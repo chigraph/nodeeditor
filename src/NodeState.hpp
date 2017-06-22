@@ -13,7 +13,7 @@ namespace QtNodes
 {
 
 class Connection;
-class NodeDataModel;
+class NodeIndex;
 
 /// Contains vectors of connected input and output connections.
 /// Stores bool for reacting on hovering connections
@@ -28,7 +28,7 @@ public:
 
 public:
 
-  NodeState(std::unique_ptr<NodeDataModel> const &model);
+  NodeState(const NodeIndex& index);
 
 public:
 

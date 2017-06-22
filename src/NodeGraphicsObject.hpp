@@ -4,17 +4,16 @@
 #include <QtWidgets/QGraphicsObject>
 
 #include "Connection.hpp"
-
-#include "NodeGeometry.hpp"
 #include "NodeState.hpp"
+#include "NodeGeometry.hpp"
 
 class QGraphicsProxyWidget;
 
 namespace QtNodes
 {
 
+class NodeIndex;
 class FlowScene;
-class FlowItemEntry;
 
 /// Class reacts on GUI events, mouse clicks and
 /// forwards painting operation.
@@ -23,17 +22,19 @@ class NodeGraphicsObject : public QGraphicsObject
   Q_OBJECT
 
 public:
-  NodeGraphicsObject(FlowScene &scene,
-                     Node& node);
+  NodeGraphicsObject(FlowScene& scene, const NodeIndex& index);
 
   virtual
   ~NodeGraphicsObject();
 
-  Node&
-  node();
-
-  Node const&
-  node() const;
+  NodeIndex
+  index() const;
+  
+  NodeGeometry&
+  geometry();
+  
+  NodeState&
+  nodeState();
 
   QRectF
   boundingRect() const override;
@@ -90,13 +91,18 @@ private:
 
 private:
 
-  FlowScene & _scene;
-
-  Node& _node;
-
+  FlowScene& _scene;
+  
+  const NodeIndex& _nodeIndex;
+  
+  NodeGeometry _geometry;
+  
+  NodeState _state;
+  
   bool _locked;
 
   // either nullptr or owned by parent QGraphicsItem
   QGraphicsProxyWidget * _proxyWidget;
+
 };
 }

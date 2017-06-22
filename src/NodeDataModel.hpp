@@ -15,13 +15,6 @@
 namespace QtNodes
 {
 
-enum class NodeValidationState
-{
-  Valid,
-  Warning,
-  Error
-};
-
 class StyleCollection;
 
 class NODE_EDITOR_PUBLIC NodeDataModel

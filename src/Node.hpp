@@ -109,10 +109,5 @@ private:
 
   NodeState _nodeState;
 
-  // painting
-
-  NodeGeometry _nodeGeometry;
-
-  std::unique_ptr<NodeGraphicsObject> _nodeGraphicsObject;
 };
 }

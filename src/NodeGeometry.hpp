@@ -13,15 +13,13 @@
 namespace QtNodes
 {
 
-class NodeState;
-class NodeDataModel;
-class Node;
+class NodeIndex;
 
 class NODE_EDITOR_PUBLIC NodeGeometry
 {
 public:
 
-  NodeGeometry(std::unique_ptr<NodeDataModel> const &dataModel);
+  NodeGeometry(const NodeIndex& index);
 
 public:
   unsigned int
@@ -115,9 +113,9 @@ public:
   
   static 
   QPointF 
-  calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, Node* targetNode,
-                                        PortIndex sourcePortIndex, PortType sourcePort, Node* sourceNode,
-                                        Node& newNode);
+  calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, const NodeIndex& targetNode,
+                                        PortIndex sourcePortIndex, PortType sourcePort, const NodeIndex& sourceNode,
+                                        const NodeIndex& newNode);
 private:
 
   unsigned int
@@ -151,7 +149,7 @@ private:
 
   QPointF _draggingPos;
 
-  std::unique_ptr<NodeDataModel> const &_dataModel;
+  const NodeIndex& _nodeIndex;
 
   mutable QFontMetrics _fontMetrics;
   mutable QFontMetrics _boldFontMetrics;
