@@ -2,6 +2,7 @@
 
 #include "PortType.hpp"
 #include "Export.hpp"
+#include "NodeStyle.hpp"
 
 #include <cstddef>
 
@@ -17,10 +18,11 @@ namespace QtNodes
 
 class NodeIndex;
 class NodeDataType;
+class NodePainterDelegate;
 
 enum class NodeConnectionPolicy {
-  AllowOne,
-  AllowMulti
+  One,
+  Many
 };
 
 enum class NodeValidationState
@@ -40,6 +42,9 @@ public:
 
   // Scene specific functions
   virtual QStringList modelRegistry() const = 0;
+  
+  /// Get the conerter node type name, or "" if there is none.
+  virtual QString converterNode(const NodeDataType& lhs, const NodeDataType& rhs);
 
   // Retrieval functions
   //////////////////////
@@ -62,12 +67,21 @@ public:
   /// Get the embedded widget
   virtual QWidget* nodeWidget(const NodeIndex& index) const = 0;
   
+  /// Get if it's resizable
+  virtual bool nodeResizable(const NodeIndex& index) const = 0;
+  
   /// Get the validation state
   virtual NodeValidationState nodeValidationState(const NodeIndex& index) const = 0;
   
   /// Get the validation error/warning
   virtual QString nodeValidationMessage(const NodeIndex& index) const = 0;
 
+  /// Get the painter delegate
+  virtual NodePainterDelegate* nodePainterDelegate(const NodeIndex& index) const = 0;
+  
+  /// Get the style
+  virtual NodeStyle nodeStyle(const NodeIndex& index) const { return {}; }
+  
   /// Get the count of DataPorts
   virtual unsigned int nodePortCount(const NodeIndex& index, PortType portType) const = 0;
 

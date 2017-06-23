@@ -69,12 +69,6 @@ public:
 
 public:
 
-  enum class ConnectionPolicy
-  {
-    One,
-    Many,
-  };
-
   virtual
   ConnectionPolicy
   portOutConnectionPolicy(PortIndex) const

@@ -95,9 +95,15 @@ geometry() {
   return _geometry;
 }
 
-NodeState&
+NodeGeometry const&
 NodeGraphicsObject::
-nodeState() {
+geometry() const {
+  return _geometry;
+}
+
+NodeState const&
+NodeGraphicsObject::
+nodeState() const {
   return _state;
 }
 

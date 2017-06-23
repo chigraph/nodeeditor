@@ -33,8 +33,14 @@ public:
   NodeGeometry&
   geometry();
   
+  NodeGeometry const&
+  geometry() const;
+  
   NodeState&
   nodeState();
+  
+  NodeState const&
+  nodeState() const;
 
   QRectF
   boundingRect() const override;
