@@ -20,15 +20,15 @@
 
 #include "Node.hpp"
 
-using QtNodes::ConnectionGraphicsObject;
-using QtNodes::Connection;
-using QtNodes::FlowScene;
+namespace QtNodes {
 
 ConnectionGraphicsObject::
-ConnectionGraphicsObject(FlowScene &scene,
-                         Connection &connection)
-  : _scene(scene)
-  , _connection(connection)
+ConnectionGraphicsObject(const NodeIndex& leftNode, PortIndex leftPortIndex, const NodeIndex& rightNode, PortIndex rightPortIndex, FlowScene& scene)
+  : _leftNode{leftNode}
+  , _rightNode{rightNode}
+  , _leftPortIndex{leftPortIndex}
+  , _rightPortIndex{rightPortIndex}
+  , _scene{scene}
 {
   _scene.addItem(this);
 
@@ -48,14 +48,6 @@ ConnectionGraphicsObject::
 ~ConnectionGraphicsObject()
 {
   _scene.removeItem(this);
-}
-
-
-QtNodes::Connection&
-ConnectionGraphicsObject::
-connection()
-{
-  return _connection;
 }
 
 
@@ -79,10 +71,8 @@ shape() const
   //return path;
 
 #else
-  auto const &geom =
-    _connection.connectionGeometry();
 
-  return ConnectionPainter::getPainterStroke(geom);
+  return ConnectionPainter::getPainterStroke(_geometry);
 
 #endif
 }
@@ -96,6 +86,16 @@ setGeometryChanged()
 }
 
 
+NodeDataType
+ConnectionGraphicsObject::dataType() const 
+{
+  auto dataType = leftNode().model()->nodePortDataType(leftNode(), leftNodePortIndex(), PortType::Out);
+  
+  Q_ASSERT(dataType.id == leftNode().model()->nodePortDataType(rightNode(), rightNodePortIndex(), PortType::In).id);
+  
+  return dataType;
+}
+
 void
 ConnectionGraphicsObject::
 move()
@@ -104,28 +104,28 @@ move()
   auto moveEndPoint =
   [this] (PortType portType)
   {
-    if (auto node = _connection.getNode(portType))
+    auto node = portType == PortType::In ? rightNode() : leftNode();
+    
+    auto const &nodeGraphics = _scene->nodeGraphicsObject(node);
+
+    auto const &nodeGeom = nodeGraphics.geometry();
+
+    QPointF scenePos =
+      nodeGeom.portScenePosition(portType == PortType::In ? rightNodePortIndex() : leftNodePortIndex(), 
+                                  portType,
+                                  nodeGraphics.sceneTransform());
+
     {
-      auto const &nodeGraphics = node->nodeGraphicsObject();
+      QTransform sceneTrans = sceneTransform();
 
-      auto const &nodeGeom = node->nodeGeometry();
+      QPointF connectionPos = sceneTrans.inverted().map(scenePos);
 
-      QPointF scenePos =
-        nodeGeom.portScenePosition(_connection.getPortIndex(portType),
-                                   portType,
-                                   nodeGraphics.sceneTransform());
+      _geometry.setEndPoint(portType,
+                                                    connectionPos);
 
-      {
-        QTransform sceneTransform = this->sceneTransform();
-
-        QPointF connectionPos = sceneTransform.inverted().map(scenePos);
-
-        _connection.connectionGeometry().setEndPoint(portType,
-                                                     connectionPos);
-
-        _connection.getConnectionGraphicsObject().setGeometryChanged();
-        _connection.getConnectionGraphicsObject().update();
-      }
+      setGeometryChanged();
+      update();
+    
     }
   };
 
@@ -150,7 +150,7 @@ paint(QPainter* painter,
   painter->setClipRect(option->exposedRect);
 
   ConnectionPainter::paint(painter,
-                           _connection);
+                           *this);
 }
 
 
@@ -174,13 +174,11 @@ mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                            _scene,
                            view->transform());
 
-  auto &state = _connection.connectionState();
-
-  state.interactWithNode(node);
+  _state.interactWithNode(node);
   if (node)
   {
-    node->reactToPossibleConnection(state.requiredPort(),
-                                    _connection.dataType(),
+    node->reactToPossibleConnection(_state.requiredPort(),
+                                    dataType()
                                     event->scenePos());
   }
 
@@ -265,3 +263,5 @@ addGraphicsEffect()
   //effect->setOffset(4, 4);
   //effect->setColor(QColor(Qt::gray).darker(800));
 }
+
+} // namespace QtNodes

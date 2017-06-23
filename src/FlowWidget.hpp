@@ -3,6 +3,7 @@
 #include "FlowView.hpp"
 #include "PortType.hpp"
 #include "FlowSceneModel.hpp"
+#include "QUuidStdHash.hpp"
 
 #include <memory>
 #include <functional>
@@ -111,11 +112,10 @@ private:
     QString nodeCaption(const NodeIndex& index) const override;
     QPointF nodeLocation(const NodeIndex& index) const override;
     unsigned int nodePortCount(const NodeIndex& index, PortType portType) const override;
-    QString nodePortCaption(const NodeIndex& index, unsigned int portID, PortType portType) const override;
-    NodeDataType nodePortDataType(const NodeIndex& index, unsigned int portID, PortType portType) const override;
-    NodeConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, unsigned int portID, PortType portType) const override;
-    unsigned int nodePortConnectionCount(const NodeIndex& index, unsigned int portID, PortType portType) const override;
-    NodeIndex nodePortConnection(const NodeIndex& index, unsigned int portID, PortType portType, unsigned int connectionID) const override;
+    QString nodePortCaption(const NodeIndex& index, PortIndex, PortType portType) const override;
+    NodeDataType nodePortDataType(const NodeIndex& index, PortIndex, PortType portType) const override;
+    ConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, PortIndex, PortType portType) const override;
+    std::vector<std::pair<NodeIndex, PortIndex>> nodePortConnections(const NodeIndex& index, PortIndex, PortType portType, PortIndex) const override;
 
     // FlowSceneModel write interface
     bool removeConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;

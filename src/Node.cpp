@@ -83,35 +83,6 @@ id() const
 }
 
 
-void
-Node::
-reactToPossibleConnection(PortType reactingPortType,
-
-                          NodeDataType reactingDataType,
-                          QPointF const &scenePoint)
-{
-  QTransform const t = _nodeGraphicsObject->sceneTransform();
-
-  QPointF p = t.inverted().map(scenePoint);
-
-  _nodeGeometry.setDraggingPosition(p);
-
-  _nodeGraphicsObject->update();
-
-  _nodeState.setReaction(NodeState::REACTING,
-                         reactingPortType,
-                         reactingDataType);
-}
-
-
-void
-Node::
-resetReactionToConnection()
-{
-  _nodeState.setReaction(NodeState::NOT_REACTING);
-  _nodeGraphicsObject->update();
-}
-
 
 NodeGraphicsObject const &
 Node::

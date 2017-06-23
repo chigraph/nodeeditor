@@ -20,7 +20,7 @@ class NodeIndex;
 class NodeDataType;
 class NodePainterDelegate;
 
-enum class NodeConnectionPolicy {
+enum class ConnectionPolicy {
   One,
   Many
 };
@@ -86,19 +86,16 @@ public:
   virtual unsigned int nodePortCount(const NodeIndex& index, PortType portType) const = 0;
 
   /// Get the port caption
-  virtual QString nodePortCaption(const NodeIndex& index, unsigned int portID, PortType portType) const = 0;
+  virtual QString nodePortCaption(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
 
   /// Get the port data type
-  virtual NodeDataType nodePortDataType(const NodeIndex& index, unsigned int portID, PortType portType) const = 0;
+  virtual NodeDataType nodePortDataType(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
 
   /// Port Policy
-  virtual NodeConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, unsigned int portID, PortType portType) const = 0;
-
-  /// Get the number of connections at a port
-  virtual unsigned int nodePortConnectionCount(const NodeIndex& index, unsigned int portID, PortType portType) const = 0;
+  virtual ConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
 
   /// Get a connection at a port
-  virtual NodeIndex nodePortConnection(const NodeIndex& index, unsigned int portID, PortType portType, unsigned int connectionID) const = 0;
+  virtual std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(const NodeIndex& index, PortIndex portID) const = 0;
 
 
   // Mutation functions
@@ -118,6 +115,14 @@ public:
 
   /// Move a node to a new location
   virtual bool moveNode(const NodeIndex& /*index*/, QPointF /*newLocation*/) { return false; }
+  
+  
+  /// Notifications
+  /////////////////
+  
+  virtual void nodeHovered(const NodeIndex& /*index*/, const QPoint& /*pos*/, bool /*entered*/) {}
+  
+  virtual void nodeDoubleClicked(const NodeIndex& /*index*/, const QPoint& /*pos*/) {}
 
 signals:
 

@@ -53,6 +53,15 @@ public:
   void
   moveConnections() const;
 
+  
+  void reactToPossibleConnection(PortType,
+                                 NodeDataType,
+                                 QPointF const & scenePoint);
+
+  void
+  resetReactionToConnection();
+
+  
   enum { Type = UserType + 1 };
 
   int
@@ -65,7 +74,7 @@ protected:
   void
   paint(QPainter*                       painter,
         QStyleOptionGraphicsItem const* option,
-        QWidget*                        widget = 0) override;
+        QWidget*                        widget = 0) const override;
 
   QVariant
   itemChange(GraphicsItemChange change, const QVariant &value) override;

@@ -12,8 +12,8 @@
 namespace QtNodes
 {
 
-class Connection;
 class NodeIndex;
+class ConnectionGraphicsObject;
 
 /// Contains vectors of connected input and output connections.
 /// Stores bool for reacting on hovering connections
@@ -33,7 +33,7 @@ public:
 public:
 
   using ConnectionPtrSet =
-          std::unordered_map<QUuid, Connection*>;
+          std::unordered_map<QUuid, ConnectionGraphicsObject*>;
 
   /// Returns vector of connections ID.
   /// Some of them can be empty (null)

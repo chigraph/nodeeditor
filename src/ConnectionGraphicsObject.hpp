@@ -6,17 +6,20 @@
 
 #include <QtWidgets/QGraphicsObject>
 
+#include "PortType.hpp"
+#include "NodeIndex.hpp"
+#include "ConnectionGeometry.hpp"
+#include "NodeData.hpp"
+#include "ConnectionState.hpp"
+
 class QGraphicsSceneMouseEvent;
 
 namespace QtNodes
 {
-
+  
 class FlowScene;
-class Connection;
-class ConnectionGeometry;
-class Node;
 
-/// Graphic Object for connection. Adds itself to scene
+/// Graphic Object for connection.
 class ConnectionGraphicsObject
   : public QGraphicsObject
 {
@@ -24,8 +27,7 @@ class ConnectionGraphicsObject
 
 public:
 
-  ConnectionGraphicsObject(FlowScene &scene,
-                           Connection &connection);
+  ConnectionGraphicsObject(const NodeIndex& leftNode, PortIndex leftPortIndex, const NodeIndex& rightNode, PortIndex rightPortIndex, FlowScene& scene);
 
   virtual
   ~ConnectionGraphicsObject();
@@ -36,9 +38,18 @@ public:
 
 public:
 
-  Connection&
-  connection();
+  NodeIndex leftNode() const { return _leftNode; }
+  NodeIndex rightNode() const { return _rightNode; }
 
+  PortIndex leftNodePortIndex() const { return _leftPortIndex; }
+  PortIndex rightNodePortIndex() const { return _rightPortIndex; }
+
+  ConnectionGeometry const& geometry() const { return _geometry; }
+  ConnectionGeometry& geometry() { return _geometry; }
+  
+  ConnectionState const& state() const { return _state; }
+  ConnectionState& state() { return _state; }
+    
   QRectF
   boundingRect() const override;
 
@@ -47,6 +58,8 @@ public:
 
   void
   setGeometryChanged();
+  
+  NodeDataType dataType() const;
 
   /// Updates the position of both ends
   void
@@ -60,7 +73,7 @@ protected:
   void
   paint(QPainter* painter,
         QStyleOptionGraphicsItem const* option,
-        QWidget* widget = 0) override;
+        QWidget* widget = nullptr) override;
 
   void
   mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -84,8 +97,17 @@ private:
 
 private:
 
-  FlowScene & _scene;
+  ConnectionGeometry _geometry;
+  ConnectionState _state;
+  
+  NodeIndex _leftNode;
+  NodeIndex _rightNode;
 
-  Connection& _connection;
+  PortIndex _leftPortIndex;
+  PortIndex _rightPortIndex;
+  
+  FlowScene& _scene;
+  
+
 };
-}
+} // namespace QtNodes

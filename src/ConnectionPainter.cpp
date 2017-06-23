@@ -67,7 +67,7 @@ getPainterStroke(ConnectionGeometry const& geom)
 void
 ConnectionPainter::
 paint(QPainter* painter,
-      Connection const &connection)
+      ConnectionGraphicsObject const &cgo)
 {
   auto const &connectionStyle =
     StyleCollection::connectionStyle();
@@ -76,7 +76,7 @@ paint(QPainter* painter,
   QColor hoverColor    = connectionStyle.hoveredColor();
   QColor selectedColor = connectionStyle.selectedColor();
 
-  auto dataType = connection.dataType();
+  auto dataType = cgo.dataType();
 
   if (connectionStyle.useDataDefinedColors())
   {
@@ -87,10 +87,10 @@ paint(QPainter* painter,
   }
 
   ConnectionGeometry const& geom =
-    connection.connectionGeometry();
+    cgo.geometry();
 
   ConnectionState const& state =
-    connection.connectionState();
+    cgo.state();
 
   double const lineWidth     = connectionStyle.lineWidth();
   double const pointDiameter = connectionStyle.pointDiameter();
@@ -128,10 +128,7 @@ paint(QPainter* painter,
 
   bool const hovered = geom.hovered();
 
-  auto const& graphicsObject =
-    connection.getConnectionGraphicsObject();
-
-  bool const selected = graphicsObject.isSelected();
+  bool const selected = cgo.isSelected();
 
   if (hovered || selected)
   {

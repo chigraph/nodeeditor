@@ -1,35 +1,15 @@
 #include "FlowScene.hpp"
-
-#include <iostream>
-#include <stdexcept>
-
-#include <QtWidgets/QGraphicsSceneMoveEvent>
-#include <QtWidgets/QFileDialog>
-#include <QtCore/QByteArray>
-#include <QtCore/QBuffer>
-#include <QtCore/QDataStream>
-#include <QtCore/QFile>
-
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-
-#include <QDebug>
-
-#include "Node.hpp"
-#include "NodeGraphicsObject.hpp"
-
-#include "NodeGraphicsObject.hpp"
-#include "ConnectionGraphicsObject.hpp"
-
-#include "Connection.hpp"
-
-#include "FlowItemInterface.hpp"
-#include "FlowView.hpp"
-#include "DataModelRegistry.hpp"
+#include "NodeIndex.hpp"
 
 namespace QtNodes {
 
 
+NodeGraphicsObject* FlowScene::nodeGraphicsObject(const NodeIndex& index) {
+  auto iter = _nodeGraphicsObjects.find(index.id());
+  if (iter == _nodeGraphicsObjects.end()) {
+    return nullptr;
+  }
+  return iter->second;
+}
 
 } // namespace QtNodes

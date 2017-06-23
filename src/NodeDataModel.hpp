@@ -11,6 +11,7 @@
 #include "NodeStyle.hpp"
 #include "NodePainterDelegate.hpp"
 #include "Export.hpp"
+#include "FlowSceneModel.hpp"
 
 namespace QtNodes
 {

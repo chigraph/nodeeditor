@@ -2,15 +2,12 @@
 
 #include <memory>
 
-#include "Node.hpp"
-#include "Connection.hpp"
+#include "NodeIndex.hpp"
+#include "PortType.hpp"
+#include "ConnectionGraphicsObject.hpp"
 
 namespace QtNodes
 {
-
-class DataModelRegistry;
-class FlowScene;
-class NodeDataModel;
 
 /// Class performs various operations on the Node and Connection pair.
 /// An instance should be created on the stack and destroyed when
@@ -18,9 +15,8 @@ class NodeDataModel;
 class NodeConnectionInteraction
 {
 public:
-  NodeConnectionInteraction(Node& node,
-                            Connection& connection,
-                            FlowScene& scene);
+  NodeConnectionInteraction(NodeIndex const& node,
+                            ConnectionGraphicsObject& connection);
 
   /// Can connect when following conditions are met:
   /// 1) Connection 'requires' a port

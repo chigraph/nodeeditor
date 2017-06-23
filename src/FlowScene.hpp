@@ -32,13 +32,16 @@ public:
   
   FlowSceneModel* model() const { return _model; }
   
+  NodeGraphicsObject* nodeGraphicsObject(const NodeIndex& index);
   
 private:
   FlowSceneModel* _model;
+  
+  std::unordered_map<QUuid, NodeGraphicsObject*> _nodeGraphicsObjects;
 
 };
 
-Node*
+NodeIndex
 locateNodeAt(QPointF scenePoint, FlowScene &scene,
              QTransform viewTransform);
 }

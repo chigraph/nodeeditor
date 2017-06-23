@@ -52,35 +52,7 @@ public:
   QUuid
   id() const;
 
-  void reactToPossibleConnection(PortType,
-                                 NodeDataType,
-                                 QPointF const & scenePoint);
-
-  void
-  resetReactionToConnection();
-
 public:
-
-  NodeGraphicsObject const &
-  nodeGraphicsObject() const;
-
-  NodeGraphicsObject &
-  nodeGraphicsObject();
-
-  void
-  setGraphicsObject(std::unique_ptr<NodeGraphicsObject>&& graphics);
-
-  NodeGeometry&
-  nodeGeometry();
-
-  NodeGeometry const&
-  nodeGeometry() const;
-
-  NodeState const &
-  nodeState() const;
-
-  NodeState &
-  nodeState();
 
   NodeDataModel*
   nodeDataModel() const;
@@ -106,8 +78,6 @@ private:
   // data
 
   std::unique_ptr<NodeDataModel> _nodeDataModel;
-
-  NodeState _nodeState;
 
 };
 }
