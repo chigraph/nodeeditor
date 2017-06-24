@@ -9,17 +9,11 @@
 #include "NodeGraphicsObject.hpp"
 #include "NodeGeometry.hpp"
 #include "NodeState.hpp"
-#include "Node.hpp"
 #include "NodeIndex.hpp"
 #include "FlowSceneModel.hpp"
+#include "NodePainterDelegate.hpp"
 
-using QtNodes::NodePainter;
-using QtNodes::NodeGeometry;
-using QtNodes::NodeGraphicsObject;
-using QtNodes::Node;
-using QtNodes::NodeState;
-using QtNodes::NodeDataModel;
-using QtNodes::FlowScene;
+namespace QtNodes {
 
 void
 NodePainter::
@@ -51,7 +45,7 @@ paint(QPainter* painter,
   /// call custom painter
   if (auto painterDelegate = graphicsObject.index().model()->nodePainterDelegate(graphicsObject.index()))
   {
-    painterDelegate->paint(painter, geom, model);
+    painterDelegate->paint(painter, graphicsObject);
   }
 }
 
@@ -126,7 +120,7 @@ drawConnectionPoints(QPainter* painter, NodeGraphicsObject const & graphicsObjec
         auto const & dataType = model.nodePortDataType(graphicsObject.index(), i, portType);
 
         bool canConnect = (nodeState.getEntries(portType)[i].empty() ||
-                            model.nodePortConnectionPolicy(graphicsObject.index(), i, portType) == NodeConnectionPolicy::Many);
+                            model.nodePortConnectionPolicy(graphicsObject.index(), i, portType) == ConnectionPolicy::Many);
 
         double r = 1.0;
         if (nodeState.isReacting() &&
@@ -415,3 +409,5 @@ drawValidationRect(QPainter * painter, NodeGraphicsObject const & graphicsObject
     painter->drawText(position, errorMsg);
   }
 }
+
+} // namespace QtNodes

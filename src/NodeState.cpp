@@ -52,7 +52,7 @@ void
 NodeState::
 setConnection(PortType portType,
               PortIndex portIndex,
-              Connection& connection)
+              ConnectionGraphicsObject& connection)
 {
   auto &connections = getEntries(portType);
 

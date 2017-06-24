@@ -26,9 +26,6 @@ Node::
 Node(std::unique_ptr<NodeDataModel> && dataModel)
   : _id(QUuid::createUuid())
   , _nodeDataModel(std::move(dataModel))
-  , _nodeState(_nodeDataModel)
-  , _nodeGeometry(_nodeDataModel)
-  , _nodeGraphicsObject(nullptr)
 {
   _nodeGeometry.recalculateSize();
 

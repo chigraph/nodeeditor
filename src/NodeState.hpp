@@ -49,7 +49,7 @@ public:
   void
   setConnection(PortType portType,
                 PortIndex portIndex,
-                Connection& connection);
+                ConnectionGraphicsObject& connection);
 
   void
   eraseConnection(PortType portType,
