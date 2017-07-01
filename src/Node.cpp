@@ -27,8 +27,6 @@ Node(std::unique_ptr<NodeDataModel> && dataModel)
   : _id(QUuid::createUuid())
   , _nodeDataModel(std::move(dataModel))
 {
-  _nodeGeometry.recalculateSize();
-
   // propagate data: model => node
   connect(_nodeDataModel.get(), &NodeDataModel::dataUpdated,
           this, &Node::onDataUpdated);
@@ -49,8 +47,8 @@ save() const
   nodeJson["model"] = _nodeDataModel->save();
 
   QJsonObject obj;
-  obj["x"] = _nodeGraphicsObject->pos().x();
-  obj["y"] = _nodeGraphicsObject->pos().y();
+  obj["x"] = _nodeDataModel->position().x();
+  obj["y"] = _nodeDataModel->position().y();
   nodeJson["position"] = obj;
 
   return nodeJson;
@@ -66,7 +64,7 @@ restore(QJsonObject const& json)
   QJsonObject positionJson = json["position"].toObject();
   QPointF     point(positionJson["x"].toDouble(),
                     positionJson["y"].toDouble());
-  _nodeGraphicsObject->setPos(point);
+  _nodeDataModel->setPosition(point);
 
   _nodeDataModel->restore(json["model"].toObject());
 }
@@ -78,66 +76,6 @@ id() const
 {
   return _id;
 }
-
-
-
-NodeGraphicsObject const &
-Node::
-nodeGraphicsObject() const
-{
-  return *_nodeGraphicsObject.get();
-}
-
-
-NodeGraphicsObject &
-Node::
-nodeGraphicsObject()
-{
-  return *_nodeGraphicsObject.get();
-}
-
-
-void
-Node::
-setGraphicsObject(std::unique_ptr<NodeGraphicsObject>&& graphics)
-{
-  _nodeGraphicsObject = std::move(graphics);
-
-  _nodeGeometry.recalculateSize();
-}
-
-
-NodeGeometry&
-Node::
-nodeGeometry()
-{
-  return _nodeGeometry;
-}
-
-
-NodeGeometry const&
-Node::
-nodeGeometry() const
-{
-  return _nodeGeometry;
-}
-
-
-NodeState const &
-Node::
-nodeState() const
-{
-  return _nodeState;
-}
-
-
-NodeState &
-Node::
-nodeState()
-{
-  return _nodeState;
-}
-
 
 NodeDataModel*
 Node::
@@ -153,12 +91,6 @@ propagateData(std::shared_ptr<NodeData> nodeData,
               PortIndex inPortIndex) const
 {
   _nodeDataModel->setInData(nodeData, inPortIndex);
-
-  //Recalculate the nodes visuals. A data change can result in the node taking more space than before, so this forces a recalculate+repaint on the affected node
-  _nodeGraphicsObject->setGeometryChanged();
-  _nodeGeometry.recalculateSize();
-  _nodeGraphicsObject->update();
-  _nodeGraphicsObject->moveConnections();
 }
 
 

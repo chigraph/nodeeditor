@@ -285,18 +285,18 @@ validationWidth() const
 
 QPointF
 NodeGeometry::
-calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, const NodeIndex& targetNode, 
-                                      PortIndex sourcePortIndex, PortType sourcePort, const NodeIndex& sourceNode, 
-                                      const NodeIndex& newNode)
+calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, const NodeGraphicsObject& targetNode, 
+                                      PortIndex sourcePortIndex, PortType sourcePort, const NodeGraphicsObject& sourceNode, 
+                                      const NodeGeometry& newNodeGeom)
 {
   //Calculating the nodes position in the scene. It'll be positioned half way between the two ports that it "connects". 
   //The first line calculates the halfway point between the ports (node position + port position on the node for both nodes averaged).
   //The second line offsets this coordinate with the size of the new node, so that the new nodes center falls on the originally
   //calculated coordinate, instead of it's upper left corner.
-  auto converterNodePos = (sourceNode->nodeGraphicsObject().pos() + sourceNode->nodeGeometry().portScenePosition(sourcePortIndex, sourcePort) +
-    targetNode->nodeGraphicsObject().pos() + targetNode->nodeGeometry().portScenePosition(targetPortIndex, targetPort)) / 2.0f;
-  converterNodePos.setX(converterNodePos.x() - newNode.nodeGeometry().width() / 2.0f);
-  converterNodePos.setY(converterNodePos.y() - newNode.nodeGeometry().height() / 2.0f);
+  auto converterNodePos = (sourceNode.pos() + sourceNode.geometry().portScenePosition(sourcePortIndex, sourcePort) 
+    + targetNode.pos() + targetNode.geometry().portScenePosition(targetPortIndex, targetPort)) / 2.0f;
+  converterNodePos.setX(converterNodePos.x() - newNodeGeom.width() / 2.0f);
+  converterNodePos.setY(converterNodePos.y() - newNodeGeom.height() / 2.0f);
   return converterNodePos;
 }
 

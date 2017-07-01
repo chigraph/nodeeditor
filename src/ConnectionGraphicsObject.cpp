@@ -55,7 +55,7 @@ QRectF
 ConnectionGraphicsObject::
 boundingRect() const
 {
-  return _connection.connectionGeometry().boundingRect();
+  return _geometry.boundingRect();
 }
 
 
@@ -89,9 +89,10 @@ setGeometryChanged()
 NodeDataType
 ConnectionGraphicsObject::dataType() const 
 {
-  auto dataType = leftNode().model()->nodePortDataType(leftNode(), leftNodePortIndex(), PortType::Out);
+  auto dataType = node(PortType::Out).model()->nodePortDataType(node(PortType::Out), portIndex(PortType::Out), PortType::Out);
   
-  Q_ASSERT(dataType.id == leftNode().model()->nodePortDataType(rightNode(), rightNodePortIndex(), PortType::In).id);
+  // make sure it matches the other side
+  Q_ASSERT(dataType.id == node(PortType::Out).model()->nodePortDataType(node(PortType::In), portIndex(PortType::In), PortType::In).id);
   
   return dataType;
 }
@@ -104,14 +105,14 @@ move()
   auto moveEndPoint =
   [this] (PortType portType)
   {
-    auto node = portType == PortType::In ? rightNode() : leftNode();
+    auto node = node(portType);
     
     auto const &nodeGraphics = _scene->nodeGraphicsObject(node);
 
     auto const &nodeGeom = nodeGraphics.geometry();
 
     QPointF scenePos =
-      nodeGeom.portScenePosition(portType == PortType::In ? rightNodePortIndex() : leftNodePortIndex(), 
+      nodeGeom.portScenePosition(portIndex(portType), 
                                   portType,
                                   nodeGraphics.sceneTransform());
 

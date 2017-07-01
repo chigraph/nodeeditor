@@ -72,12 +72,11 @@ public slots: // data propagation
 private:
 
   // addressing
-
   QUuid _id;
-
+  
   // data
-
   std::unique_ptr<NodeDataModel> _nodeDataModel;
+  NodeIndex _index;
 
 };
 }

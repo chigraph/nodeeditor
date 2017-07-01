@@ -111,7 +111,7 @@ public:
   virtual bool removeNode(const NodeIndex& /*index*/) { return false; }
 
   /// Add a node
-  virtual bool addNode(const QString& /*typeID*/, std::size_t /*insertAt*/) { return false; }
+  virtual bool addNode(const QString& /*typeID*/, QUuid& /*uuidToFill*/) { return false; }
 
   /// Move a node to a new location
   virtual bool moveNode(const NodeIndex& /*index*/, QPointF /*newLocation*/) { return false; }

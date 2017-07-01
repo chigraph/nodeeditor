@@ -82,6 +82,11 @@ public:
 
   void
   setNodeStyle(NodeStyle const& style);
+  
+public:
+  
+  QPointF position() const;
+  void setPosition(QPointF newPos);
 
 public:
 

@@ -14,6 +14,7 @@ namespace QtNodes
 {
 
 class NodeIndex;
+class NodeGraphicsObject;
 
 class NODE_EDITOR_PUBLIC NodeGeometry
 {
@@ -113,9 +114,9 @@ public:
   
   static 
   QPointF 
-  calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, const NodeIndex& targetNode,
-                                        PortIndex sourcePortIndex, PortType sourcePort, const NodeIndex& sourceNode,
-                                        const NodeIndex& newNode);
+  calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex, PortType targetPort, const NodeGraphicsObject& targetNode, 
+                                      PortIndex sourcePortIndex, PortType sourcePort, const NodeGraphicsObject& sourceNode, 
+                                      const NodeGeometry& newNodeGeom);
 private:
 
   unsigned int

@@ -38,11 +38,10 @@ public:
 
 public:
 
-  NodeIndex leftNode() const { return _leftNode; }
-  NodeIndex rightNode() const { return _rightNode; }
-
-  PortIndex leftNodePortIndex() const { return _leftPortIndex; }
-  PortIndex rightNodePortIndex() const { return _rightPortIndex; }
+  NodeIndex node(PortType pType) const { return pType == PortType::In ? _rightNode : _leftNode; }
+  PortIndex portIndex(PortType pType) const { return pType == PortType::In ? _rightPortIndex : _leftPortIndex; }
+  
+  FlowScene& flowScene() const { return _scene; }
 
   ConnectionGeometry const& geometry() const { return _geometry; }
   ConnectionGeometry& geometry() { return _geometry; }

@@ -3,13 +3,14 @@
 #include "NodeDataModel.hpp"
 #include "NodeIndex.hpp"
 #include "FlowSceneModel.hpp"
+#include "QUuidStdHash.hpp"
 
 namespace QtNodes {
 
 NodeState::
 NodeState(NodeIndex const &index)
-  : _inConnections(index.model().nodePortCount(index, PortType::In))
-  , _outConnections(index.model().nodePortCount(index, PortType::Out))
+  : _inConnections(index.model()->nodePortCount(index, PortType::In))
+  , _outConnections(index.model()->nodePortCount(index, PortType::Out))
   , _reaction(NOT_REACTING)
   , _reactingPortType(PortType::None)
   , _resizing(false)
@@ -56,17 +57,21 @@ setConnection(PortType portType,
 {
   auto &connections = getEntries(portType);
 
-  connections[portIndex].insert(std::make_pair(connection.id(),
-                                               &connection));
+  connections[portIndex].push_back(&connection);
 }
 
 void
 NodeState::
 eraseConnection(PortType portType,
                 PortIndex portIndex,
-                QUuid id)
+                 ConnectionGraphicsObject& conn)
 {
-  getEntries(portType)[portIndex].erase(id);
+  auto& ptrSet = getEntries(portType)[portIndex];
+  auto iter = std::find(ptrSet.begin(), ptrSet.end(), &conn);
+  if (iter != ptrSet.end()) {
+    ptrSet.erase(iter);
+  }
+  
 }
 
 

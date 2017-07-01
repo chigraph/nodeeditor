@@ -33,7 +33,7 @@ public:
 public:
 
   using ConnectionPtrSet =
-          std::unordered_map<QUuid, ConnectionGraphicsObject*>;
+          std::vector<ConnectionGraphicsObject*>;
 
   /// Returns vector of connections ID.
   /// Some of them can be empty (null)
@@ -54,7 +54,7 @@ public:
   void
   eraseConnection(PortType portType,
                   PortIndex portIndex,
-                  QUuid id);
+                  ConnectionGraphicsObject& connection);
 
   ReactToConnectionState
   reaction() const;

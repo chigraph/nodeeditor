@@ -115,7 +115,7 @@ private:
     QString nodePortCaption(const NodeIndex& index, PortIndex, PortType portType) const override;
     NodeDataType nodePortDataType(const NodeIndex& index, PortIndex, PortType portType) const override;
     ConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, PortIndex, PortType portType) const override;
-    std::vector<std::pair<NodeIndex, PortIndex>> nodePortConnections(const NodeIndex& index, PortIndex, PortType portType, PortIndex) const override;
+    std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(const NodeIndex& index, PortIndex id) const override;
 
     // FlowSceneModel write interface
     bool removeConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;
