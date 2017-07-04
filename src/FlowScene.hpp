@@ -24,7 +24,7 @@ class NODE_EDITOR_PUBLIC FlowScene
   Q_OBJECT
 public:
 
-  FlowScene(FlowSceneModel* model);
+  FlowScene(FlowSceneModel* model = nullptr);
 
   ~FlowScene();
 

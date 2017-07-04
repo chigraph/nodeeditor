@@ -121,7 +121,7 @@ private:
     bool removeConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;
     bool addConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;
     bool removeNode(const NodeIndex& index) override;
-    bool addNode(const QString& typeID, std::size_t insertAt) override;
+    bool addNode(const QString& typeID, QUuid& uuidToFill) override;
     bool moveNode(const NodeIndex& index, QPointF newLocation) override;
 
   private:

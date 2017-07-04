@@ -4,7 +4,7 @@
 
 namespace QtNodes {
 
-FlowWidget::FlowWidget(std::shared_ptr<DataModelRegistry> registry) : FlowView{new FlowScene} {
+FlowWidget::FlowWidget(std::shared_ptr<DataModelRegistry> registry) : FlowView{new FlowScene()} {
   
 }
 

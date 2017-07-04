@@ -175,29 +175,21 @@ disconnect(PortType portToDisconnect) const
     _connection->portIndex(portToDisconnect);
 
   // try to disconnect it
-  model
+  auto model = _connection->node(PortType::In).model();
   
-  // 4) Propagate invalid data to IN node
-  _connection->propagateEmptyData();
-
-  // clear Connection side
-  _connection->clearNode(portToDisconnect);
-
-  _connection->setRequiredPort(portToDisconnect);
-
-  _connection->getConnectionGraphicsObject().grabMouse();
-
-  return true;
+  // this isn't quite right. TODO: this needs to keep the interaction alive
+  return model->removeConnection(_connection->node(PortType::Out), _connection->portIndex(PortType::Out), 
+                                 _connection->node(PortType::In), _connection->portIndex(PortType::In));
 }
 
 
-// ------------------ util functions below
+// ------------------ util fconnectionStateunctions below
 
 PortType
 NodeConnectionInteraction::
 connectionRequiredPort() const
 {
-  auto const &state = _connection->connectionState();
+  auto const &state = _connection->state();
 
   return state.requiredPort();
 }
@@ -207,14 +199,11 @@ QPointF
 NodeConnectionInteraction::
 connectionEndScenePosition(PortType portType) const
 {
-  auto &go =
-    _connection->getConnectionGraphicsObject();
-
-  ConnectionGeometry& geometry = _connection->connectionGeometry();
+  ConnectionGeometry& geometry = _connection->geometry();
 
   QPointF endPoint = geometry.getEndPoint(portType);
 
-  return go.mapToScene(endPoint);
+  return _connection->mapToScene(endPoint);
 }
 
 
@@ -222,11 +211,12 @@ QPointF
 NodeConnectionInteraction::
 nodePortScenePosition(PortType portType, PortIndex portIndex) const
 {
-  NodeGeometry const &geom = _node->nodeGeometry();
+
+  NodeGraphicsObject& ngo = _connection->flowScene().graphicsObject(_node);
+  
+  NodeGeometry const &geom = ngo.geometry();
 
   QPointF p = geom.portScenePosition(portIndex, portType);
-
-  NodeGraphicsObject& ngo = _node->nodeGraphicsObject();
 
   return ngo.sceneTransform().map(p);
 }
@@ -237,10 +227,11 @@ NodeConnectionInteraction::
 nodePortIndexUnderScenePoint(PortType portType,
                              QPointF const & scenePoint) const
 {
-  NodeGeometry const &nodeGeom = _node->nodeGeometry();
+  NodeGraphicsObject const& ngo = _connection->flowScene().graphicsObject(_node);
+  NodeGeometry const &nodeGeom = ngo.geoemtry();
 
   QTransform sceneTransform =
-    _node->nodeGraphicsObject().sceneTransform();
+    ngo.sceneTransform();
 
   PortIndex portIndex = nodeGeom.checkHitScenePoint(portType,
                                                     scenePoint,
@@ -253,12 +244,12 @@ bool
 NodeConnectionInteraction::
 nodePortIsEmpty(PortType portType, PortIndex portIndex) const
 {
-  NodeState const & nodeState = _node->nodeState();
+  NodeState const & nodeState = _connection->flowScene().nodeGraphicsObject(_node)->nodeState();
 
   auto const & entries = nodeState.getEntries(portType);
 
   if (entries[portIndex].empty()) return true;
 
-  const auto outPolicy = _node->nodeDataModel()->portOutConnectionPolicy(portIndex);
-  return ( portType == PortType::Out && outPolicy == NodeDataModel::ConnectionPolicy::Many);
+  const auto outPolicy = _node.model()->nodePortConnectionPolicy(_node, portIndex, portType);
+  return outPolicy == ConnectionPolicy::Many;
 }
