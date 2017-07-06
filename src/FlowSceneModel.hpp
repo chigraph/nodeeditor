@@ -17,7 +17,7 @@ namespace QtNodes
 {
 
 class NodeIndex;
-class NodeDataType;
+struct NodeDataType;
 class NodePainterDelegate;
 
 enum class ConnectionPolicy {
@@ -42,9 +42,13 @@ public:
 
   // Scene specific functions
   virtual QStringList modelRegistry() const = 0;
-  
+
+  /// Get the catergory for a node type
+  /// name will be from `modelRegistry()`
+  virtual QString nodeTypeCatergory(QString const& name);
+
   /// Get the conerter node type name, or "" if there is none.
-  virtual QString converterNode(const NodeDataType& lhs, const NodeDataType& rhs);
+  virtual QString converterNode(NodeDataType const& lhs, NodeDataType const& rhs);
 
   // Retrieval functions
   //////////////////////
@@ -56,90 +60,92 @@ public:
   virtual NodeIndex nodeIndex(const QUuid& ID) const = 0;
 
   /// Get the type ID for the node
-  virtual QString nodeTypeIdentifier(const NodeIndex& index) const = 0;
+  virtual QString nodeTypeIdentifier(NodeIndex const& index) const = 0;
 
   /// Get the caption for the node
-  virtual QString nodeCaption(const NodeIndex& index) const = 0;
+  virtual QString nodeCaption(NodeIndex const& index) const = 0;
 
   /// Get the location of a node
-  virtual QPointF nodeLocation(const NodeIndex& index) const = 0;
+  virtual QPointF nodeLocation(NodeIndex const& index) const = 0;
 
   /// Get the embedded widget
-  virtual QWidget* nodeWidget(const NodeIndex& index) const = 0;
+  virtual QWidget* nodeWidget(NodeIndex const& index) const = 0;
   
   /// Get if it's resizable
-  virtual bool nodeResizable(const NodeIndex& index) const = 0;
+  virtual bool nodeResizable(NodeIndex const& index) const = 0;
   
   /// Get the validation state
-  virtual NodeValidationState nodeValidationState(const NodeIndex& index) const = 0;
+  virtual NodeValidationState nodeValidationState(NodeIndex const& index) const = 0;
   
   /// Get the validation error/warning
-  virtual QString nodeValidationMessage(const NodeIndex& index) const = 0;
+  virtual QString nodeValidationMessage(NodeIndex const& index) const = 0;
 
   /// Get the painter delegate
-  virtual NodePainterDelegate* nodePainterDelegate(const NodeIndex& index) const = 0;
+  virtual NodePainterDelegate* nodePainterDelegate(NodeIndex const& index) const = 0;
   
   /// Get the style
-  virtual NodeStyle nodeStyle(const NodeIndex& index) const { return {}; }
+  virtual NodeStyle nodeStyle(NodeIndex const& index) const { return {}; }
   
   /// Get the count of DataPorts
-  virtual unsigned int nodePortCount(const NodeIndex& index, PortType portType) const = 0;
+  virtual unsigned int nodePortCount(NodeIndex const& index, PortType portType) const = 0;
 
   /// Get the port caption
-  virtual QString nodePortCaption(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
+  virtual QString nodePortCaption(NodeIndex const& index, PortIndex portID, PortType portType) const = 0;
 
   /// Get the port data type
-  virtual NodeDataType nodePortDataType(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
+  virtual NodeDataType nodePortDataType(NodeIndex const& index, PortIndex portID, PortType portType) const = 0;
 
   /// Port Policy
-  virtual ConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, PortIndex portID, PortType portType) const = 0;
+  virtual ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex portID, PortType portType) const = 0;
 
   /// Get a connection at a port
-  virtual std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(const NodeIndex& index, PortIndex portID) const = 0;
+  virtual std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(NodeIndex const& index, PortIndex portID) const = 0;
 
 
   // Mutation functions
   /////////////////////
 
   /// Remove a connection
-  virtual bool removeConnection(const NodeIndex& /*leftNode*/, unsigned int /*leftPortID*/, const NodeIndex& /*rightNode*/, unsigned int /*rightPortID*/) { return false; }
+  virtual bool removeConnection(NodeIndex const& /*leftNode*/, PortIndex /*leftPortID*/, NodeIndex const& /*rightNode*/, PortIndex /*rightPortID*/) { return false; }
 
   /// Add a connection
-  virtual bool addConnection(const NodeIndex& /*leftNode*/, unsigned int /*leftPortID*/, const NodeIndex& /*rightNode*/, unsigned int /*rightPortID*/) { return false; }
+  virtual bool addConnection(NodeIndex const& /*leftNode*/, PortIndex /*leftPortID*/, NodeIndex const& /*rightNode*/, PortIndex /*rightPortID*/) { return false; }
 
   /// Remove a node
-  virtual bool removeNode(const NodeIndex& /*index*/) { return false; }
+  virtual bool removeNode(NodeIndex const& /*index*/) { return false; }
 
   /// Add a node
-  virtual bool addNode(const QString& /*typeID*/, QUuid& /*uuidToFill*/) { return false; }
+  virtual bool addNode(QString const& /*typeID*/, QUuid& /*uuidToFill*/) { return false; }
 
   /// Move a node to a new location
-  virtual bool moveNode(const NodeIndex& /*index*/, QPointF /*newLocation*/) { return false; }
+  virtual bool moveNode(NodeIndex const& /*index*/, QPointF /*newLocation*/) { return false; }
   
   
   /// Notifications
   /////////////////
   
-  virtual void nodeHovered(const NodeIndex& /*index*/, const QPoint& /*pos*/, bool /*entered*/) {}
+  virtual void connectionHovered(NodeIndex const& /*lhs*/, PortIndex /*lPortIndex*/, NodeIndex const& /*rhs*/, PortIndex /*rPortIndex*/, QPoint const& /*pos*/, bool /*entered*/) {}
   
-  virtual void nodeDoubleClicked(const NodeIndex& /*index*/, const QPoint& /*pos*/) {}
+  virtual void nodeHovered(NodeIndex const& /*index*/, QPoint const& /*pos*/, bool /*entered*/) {}
+  
+  virtual void nodeDoubleClicked(NodeIndex const& /*index*/, QPoint const& /*pos*/) {}
 
 signals:
 
-  void nodeAboutToBeRemoved(const NodeIndex& index);
+  void nodeAboutToBeRemoved(NodeIndex const& index);
   void nodeRemoved(const QUuid& id);
 
   void nodeAdded(const QUuid& newID);
 
-  void nodePortUpdated(const NodeIndex& id);
+  void nodePortUpdated(NodeIndex const& id);
   
-  void nodeValidationUpdated(const NodeIndex& id);
+  void nodeValidationUpdated(NodeIndex const& id);
 
-  void connectionRemoved(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID);
+  void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
 
-  void connectionAdded(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID);
+  void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
 
-  void nodeMoved(const NodeIndex& index, QPointF newLocation);
+  void nodeMoved(NodeIndex const& index, QPointF newLocation);
 
 protected:
 

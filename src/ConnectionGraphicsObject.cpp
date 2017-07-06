@@ -105,9 +105,9 @@ move()
   auto moveEndPoint =
   [this] (PortType portType)
   {
-    auto node = node(portType);
+    auto nodeIndex = node(portType);
     
-    auto const &nodeGraphics = _scene->nodeGraphicsObject(node);
+    auto const &nodeGraphics = *_scene.nodeGraphicsObject(nodeIndex);
 
     auto const &nodeGeom = nodeGraphics.geometry();
 
@@ -179,7 +179,7 @@ mouseMoveEvent(QGraphicsSceneMouseEvent* event)
   if (node)
   {
     node->reactToPossibleConnection(_state.requiredPort(),
-                                    dataType()
+                                    dataType(),
                                     event->scenePos());
   }
 
@@ -187,11 +187,10 @@ mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
   QPointF offset = event->pos() - event->lastPos();
 
-  auto requiredPort = _connection.requiredPort();
-
+  auto requiredPort = _state.requiredPort();
   if (requiredPort != PortType::None)
   {
-    _connection.connectionGeometry().moveEndPoint(requiredPort, offset);
+    _geometry.moveEndPoint(requiredPort, offset);
   }
 
   //-------------------
@@ -212,16 +211,15 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   auto node = locateNodeAt(event->scenePos(), _scene,
                            _scene.views()[0]->transform());
 
-  NodeConnectionInteraction interaction(*node, _connection, _scene);
+  NodeConnectionInteraction interaction(node->index(), *this);
 
   if (node && interaction.tryConnect())
   {
     node->resetReactionToConnection();
   }
-  else if (_connection.connectionState().requiresPort())
+  else if (state().requiresPort())
   {
-
-    _scene.deleteConnection(_connection);
+    // TODO: somehow remove this
   }
 }
 
@@ -230,10 +228,12 @@ void
 ConnectionGraphicsObject::
 hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-  _connection.connectionGeometry().setHovered(true);
+  geometry().setHovered(true);
 
   update();
-  _scene.connectionHovered(connection(), event->screenPos());
+  
+  _leftNode.model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), true);
+  
   event->accept();
 }
 
@@ -242,10 +242,10 @@ void
 ConnectionGraphicsObject::
 hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-  _connection.connectionGeometry().setHovered(false);
+  geometry().setHovered(false);
 
   update();
-  _scene.connectionHoverLeft(connection());
+  _leftNode.model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), false);
   event->accept();
 }
 

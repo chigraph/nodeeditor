@@ -212,7 +212,7 @@ NodeConnectionInteraction::
 nodePortScenePosition(PortType portType, PortIndex portIndex) const
 {
 
-  NodeGraphicsObject& ngo = _connection->flowScene().graphicsObject(_node);
+  NodeGraphicsObject const& ngo = *_connection->flowScene().nodeGraphicsObject(_node);
   
   NodeGeometry const &geom = ngo.geometry();
 
@@ -227,8 +227,8 @@ NodeConnectionInteraction::
 nodePortIndexUnderScenePoint(PortType portType,
                              QPointF const & scenePoint) const
 {
-  NodeGraphicsObject const& ngo = _connection->flowScene().graphicsObject(_node);
-  NodeGeometry const &nodeGeom = ngo.geoemtry();
+  NodeGraphicsObject const& ngo = *_connection->flowScene().nodeGraphicsObject(_node);
+  NodeGeometry const &nodeGeom = ngo.geometry();
 
   QTransform sceneTransform =
     ngo.sceneTransform();

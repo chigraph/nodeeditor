@@ -64,16 +64,6 @@ Connection::
 ~Connection()
 {
   propagateEmptyData();
-
-  if (_inNode)
-  {
-    _inNode->nodeGraphicsObject().update();
-  }
-
-  if (_outNode)
-  {
-    _outNode->nodeGraphicsObject().update();
-  }
 }
 
 

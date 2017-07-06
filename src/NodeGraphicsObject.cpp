@@ -27,8 +27,8 @@ NodeGraphicsObject(FlowScene& scene, const NodeIndex& index)
   , _nodeIndex(index)
   , _geometry(index)
   , _state(index)
-  , _proxyWidget(nullptr)
   , _locked(false)
+  , _proxyWidget(nullptr)
 {
   _scene.addItem(this);
 
@@ -161,7 +161,7 @@ moveConnections() const
       for (auto const & connections : connectionEntries)
       {
         for (auto & con : connections)
-          con.second->move();
+          con->move();
       }
     };
 
@@ -214,7 +214,7 @@ void
 NodeGraphicsObject::
 paint(QPainter * painter,
       QStyleOptionGraphicsItem const* option,
-      QWidget* ) const
+      QWidget* )
 {
   painter->setClipRect(option->exposedRect);
 

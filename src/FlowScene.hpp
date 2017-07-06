@@ -41,7 +41,7 @@ private:
 
 };
 
-NodeIndex
+NodeGraphicsObject*
 locateNodeAt(QPointF scenePoint, FlowScene &scene,
              QTransform viewTransform);
 }
