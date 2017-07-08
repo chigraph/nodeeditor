@@ -108,21 +108,21 @@ private:
     QStringList modelRegistry() const override;
     QList<QUuid> nodeUUids() const override;
     NodeIndex nodeIndex(const QUuid& ID) const override;
-    QString nodeTypeIdentifier(const NodeIndex& index) const override;
-    QString nodeCaption(const NodeIndex& index) const override;
-    QPointF nodeLocation(const NodeIndex& index) const override;
-    unsigned int nodePortCount(const NodeIndex& index, PortType portType) const override;
-    QString nodePortCaption(const NodeIndex& index, PortIndex, PortType portType) const override;
-    NodeDataType nodePortDataType(const NodeIndex& index, PortIndex, PortType portType) const override;
-    ConnectionPolicy nodePortConnectionPolicy(const NodeIndex& index, PortIndex, PortType portType) const override;
-    std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(const NodeIndex& index, PortIndex id) const override;
+    QString nodeTypeIdentifier(NodeIndex const& index) const override;
+    QString nodeCaption(NodeIndex const& index) const override;
+    QPointF nodeLocation(NodeIndex const& index) const override;
+    unsigned int nodePortCount(NodeIndex const& index, PortType portType) const override;
+    QString nodePortCaption(NodeIndex const& index, PortIndex, PortType portType) const override;
+    NodeDataType nodePortDataType(NodeIndex const& index, PortIndex, PortType portType) const override;
+    ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex, PortType portType) const override;
+    std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(NodeIndex const& index, PortIndex id) const override;
 
     // FlowSceneModel write interface
-    bool removeConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;
-    bool addConnection(const NodeIndex& leftNode, unsigned int leftPortID, const NodeIndex& rightNode, unsigned int rightPortID) override;
-    bool removeNode(const NodeIndex& index) override;
-    bool addNode(const QString& typeID, QUuid& uuidToFill) override;
-    bool moveNode(const NodeIndex& index, QPointF newLocation) override;
+    bool removeConnection(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID) override;
+    bool addConnection(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID) override;
+    bool removeNode(NodeIndex const& index) override;
+    QUuid addNode(const QString& typeID, QPointF const& location) override;
+    bool moveNode(NodeIndex const& index, QPointF newLocation) override;
 
   private:
     using SharedConnection = std::shared_ptr<Connection>;

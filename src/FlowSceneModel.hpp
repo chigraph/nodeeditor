@@ -114,8 +114,8 @@ public:
   /// Remove a node
   virtual bool removeNode(NodeIndex const& /*index*/) { return false; }
 
-  /// Add a node
-  virtual bool addNode(QString const& /*typeID*/, QUuid& /*uuidToFill*/) { return false; }
+  /// Add a  -- return {} if it fails
+  virtual QUuid addNode(QString const& /*typeID*/, QPointF const& /*pos*/) { return QUuid{}; }
 
   /// Move a node to a new location
   virtual bool moveNode(NodeIndex const& /*index*/, QPointF /*newLocation*/) { return false; }

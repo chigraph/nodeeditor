@@ -8,7 +8,6 @@
 
 #include "FlowScene.hpp"
 
-#include "Connection.hpp"
 #include "ConnectionGeometry.hpp"
 #include "ConnectionPainter.hpp"
 #include "ConnectionState.hpp"

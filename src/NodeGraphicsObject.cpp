@@ -267,7 +267,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         // start dragging existing connection if it's setup to only have one connection
         if (!connections.empty() && model.nodePortConnectionPolicy(_nodeIndex, portIndex, portToCheck) == ConnectionPolicy::One)
         {
-          auto con = connections.begin()->second;
+          auto con = connections[0];
 
           NodeConnectionInteraction interaction(_nodeIndex, *con);
 

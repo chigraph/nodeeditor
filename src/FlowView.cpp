@@ -105,21 +105,34 @@ contextMenuEvent(QContextMenuEvent *event)
 
   modelMenu.addAction(treeViewAction);
 
-  QMap<QString, QTreeWidgetItem*> topLevelItems;
-  for (auto const &cat : _scene->registry().categories())
+  std::unordered_map<QString, QTreeWidgetItem*> catergoryItems;
+  for (auto const &modelName : _scene->model()->modelRegistry())
   {
-    auto item = new QTreeWidgetItem(treeView);
-    item->setText(0, cat);
-    item->setData(0, Qt::UserRole, skipText);
-    topLevelItems[cat] = item;
-  }
+    // get the catergory
+    auto catergory = _scene->model()->nodeTypeCatergory(modelName);
+    
+    // see if it's already in the map
+    auto iter = catergoryItems.find(catergory);
+    
+    // add it if it doesn't exist
+    if (iter == catergoryItems.end()) {
+        
+        auto item = new QTreeWidgetItem(treeView);
+        item->setText(0, catergory);
+        item->setData(0, Qt::UserRole, skipText);
+        
+        iter = catergoryItems.emplace(catergory, item).first; 
+    }
+    
+    // this is the catergory item
+    auto parent = iter->second;
+    
+    // add the item
+    
 
-  for (auto const &assoc : _scene->registry().registeredModelsCategoryAssociation())
-  {
-    auto parent = topLevelItems[assoc.second];
     auto item   = new QTreeWidgetItem(parent);
-    item->setText(0, assoc.first);
-    item->setData(0, Qt::UserRole, assoc.first);
+    item->setText(0, modelName);
+    item->setData(0, Qt::UserRole, modelName);
   }
 
   treeView->expandAll();
@@ -133,22 +146,12 @@ contextMenuEvent(QContextMenuEvent *event)
       return;
     }
 
-    auto type = _scene->registry().create(modelName);
+    QPoint pos = event->pos();
 
-    if (type)
-    {
-      auto& node = _scene->createNode(std::move(type));
+    QPointF posView = this->mapToScene(pos);
 
-      QPoint pos = event->pos();
-
-      QPointF posView = this->mapToScene(pos);
-
-      node.nodeGraphicsObject().setPos(posView);
-    }
-    else
-    {
-      qDebug() << "Model not found";
-    }
+    // try to create the node
+    _scene->model()->addNode(modelName, posView);
 
     modelMenu.close();
   });
@@ -156,11 +159,11 @@ contextMenuEvent(QContextMenuEvent *event)
   //Setup filtering
   connect(txtBox, &QLineEdit::textChanged, [&](const QString &text)
   {
-    for (auto& topLvlItem : topLevelItems)
+    for (auto& topLvlItem : catergoryItems)
     {
-      for (int i = 0; i < topLvlItem->childCount(); ++i)
+      for (int i = 0; i < topLvlItem.second->childCount(); ++i)
       {
-        auto child = topLvlItem->child(i);
+        auto child = topLvlItem.second->child(i);
         auto modelName = child->data(0, Qt::UserRole).toString();
         if (modelName.contains(text, Qt::CaseInsensitive))
         {

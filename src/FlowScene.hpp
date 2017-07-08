@@ -39,6 +39,9 @@ private:
   
   std::unordered_map<QUuid, NodeGraphicsObject*> _nodeGraphicsObjects;
 
+  // This is for when you're creating a connection
+  ConnectionGraphicsObject* _temporaryGraphics = nullptr;
+  
 };
 
 NodeGraphicsObject*

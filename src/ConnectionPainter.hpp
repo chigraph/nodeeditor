@@ -1,8 +1,9 @@
 #pragma once
 
+#include <QtGui/QPainter>
+
 #include <memory>
 
-#include <QtGui/QPainter>
 
 namespace QtNodes
 {

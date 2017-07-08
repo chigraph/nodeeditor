@@ -5,15 +5,16 @@
 #include "ConnectionGeometry.hpp"
 #include "ConnectionState.hpp"
 #include "ConnectionGraphicsObject.hpp"
-#include "Connection.hpp"
 
 #include "NodeData.hpp"
 
 #include "StyleCollection.hpp"
 
-using QtNodes::ConnectionPainter;
-using QtNodes::ConnectionGeometry;
-using QtNodes::Connection;
+#include <limits>
+
+#include <QDebug>
+
+namespace QtNodes {
 
 ConnectionPainter::
 ConnectionPainter()
@@ -60,9 +61,6 @@ getPainterStroke(ConnectionGeometry const& geom)
 }
 
 
-#include <limits>
-
-#include <QDebug>
 
 void
 ConnectionPainter::
@@ -181,3 +179,5 @@ paint(QPainter* painter,
   painter->drawEllipse(source, pointRadius, pointRadius);
   painter->drawEllipse(sink, pointRadius, pointRadius);
 }
+
+} // QtNodes

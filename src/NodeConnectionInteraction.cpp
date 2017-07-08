@@ -6,14 +6,7 @@
 #include "DataModelRegistry.hpp"
 #include "FlowScene.hpp"
 
-using QtNodes::NodeConnectionInteraction;
-using QtNodes::PortType;
-using QtNodes::PortIndex;
-using QtNodes::FlowScene;
-using QtNodes::Node;
-using QtNodes::Connection;
-using QtNodes::NodeDataModel;
-
+namespace QtNodes {
 
 NodeConnectionInteraction::
 NodeConnectionInteraction(NodeIndex const& node,
@@ -109,8 +102,8 @@ tryConnect() const
 
     
     // try to create the converter  node
-    QUuid newNodeID;
-    if (model->addNode(typeConverterModel, newNodeID)) {
+    QUuid newNodeID = model->addNode(typeConverterModel, QPointF{});
+    if (!newNodeID.isNull()) {
       // node was created!
       NodeIndex converterNode = model->nodeIndex(newNodeID);
       
@@ -253,3 +246,4 @@ nodePortIsEmpty(PortType portType, PortIndex portIndex) const
   const auto outPolicy = _node.model()->nodePortConnectionPolicy(_node, portIndex, portType);
   return outPolicy == ConnectionPolicy::Many;
 }
+} // namespace QtNodes

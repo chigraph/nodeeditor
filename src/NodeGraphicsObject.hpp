@@ -3,7 +3,6 @@
 #include <QtCore/QUuid>
 #include <QtWidgets/QGraphicsObject>
 
-#include "Connection.hpp"
 #include "NodeState.hpp"
 #include "NodeGeometry.hpp"
 
