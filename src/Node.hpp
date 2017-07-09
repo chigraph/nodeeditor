@@ -34,7 +34,7 @@ class NODE_EDITOR_PUBLIC Node
 public:
 
   /// NodeDataModel should be an rvalue and is moved into the Node
-  Node(std::unique_ptr<NodeDataModel> && dataModel, NodeIndex const& id);
+  Node(std::unique_ptr<NodeDataModel> && dataModel, QUuid const& id);
 
   virtual
   ~Node();
@@ -63,7 +63,8 @@ public:
   NodeDataModel*
   nodeDataModel() const;
   
-  NodeIndex index() const;
+  std::vector<Connection*>&
+  connections(PortType pType, PortIndex pIdx);
 
 public slots: // data propagation
 
@@ -83,11 +84,13 @@ signals:
 
 private:
   
+  std::vector<std::vector<Connection*>> _inConnections, _outConnections;
+  
   QPointF _position;
 
   // data
   std::unique_ptr<NodeDataModel> _nodeDataModel;
-  NodeIndex _index;
+  QUuid _index;
 
 };
 }

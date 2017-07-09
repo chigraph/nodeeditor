@@ -1,11 +1,14 @@
 #include "FlowScene.hpp"
 #include "NodeIndex.hpp"
+#include "ConnectionGraphicsObject.hpp"
+#include "NodeGraphicsObject.hpp"
 
 namespace QtNodes {
 
 FlowScene::FlowScene(FlowSceneModel* model) 
   : _model(model) 
 {
+  
 }
 
 FlowScene::~FlowScene() = default;

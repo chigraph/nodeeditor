@@ -15,7 +15,7 @@
 namespace QtNodes {
 
 Node::
-Node(std::unique_ptr<NodeDataModel> && dataModel, NodeIndex const& id)
+Node(std::unique_ptr<NodeDataModel> && dataModel, QUuid const& id)
   : _nodeDataModel(std::move(dataModel))
   , _index(id)
 {
@@ -34,7 +34,7 @@ save() const
 {
   QJsonObject nodeJson;
 
-  nodeJson["id"] = _index.id().toString();
+  nodeJson["id"] = id().toString();
 
   nodeJson["model"] = _nodeDataModel->save();
 
@@ -67,7 +67,7 @@ QUuid
 Node::
 id() const
 {
-  return index().id();
+  return _index;
 }
 
 
@@ -92,11 +92,12 @@ nodeDataModel() const
   return _nodeDataModel.get();
 }
 
-NodeIndex
+
+std::vector<Connection*>&
 Node::
-index() const
+connections(PortType pType, PortIndex idx)
 {
-  return _index;
+  return pType == PortType::In ? _inConnections[idx] : _outConnections[idx];
 }
 
 void

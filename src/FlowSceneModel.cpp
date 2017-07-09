@@ -8,19 +8,18 @@ FlowSceneModel::FlowSceneModel()
 }
 
 bool FlowSceneModel::removeNodeWithConnections(NodeIndex const& index) {
-  auto& model = *index.model();
   
   // delete the conenctions that node has first
   auto deleteConnections = [&](PortType ty) -> bool {
-    for (PortIndex portID = 0; portID < model.nodePortCount(index, ty); ++portID) {
-      auto inputConnections = model.nodePortConnections(index, portID, ty);
+    for (PortIndex portID = 0; portID < nodePortCount(index, ty); ++portID) {
+      auto inputConnections = nodePortConnections(index, portID, ty);
       for (const auto& conn : inputConnections) {
         // try to remove it
         bool success;
         if (ty == PortType::In) {
-          success = model.removeConnection(conn.first, conn.second, index, portID);
+          success = removeConnection(conn.first, conn.second, index, portID);
         } else {
-          success = model.removeConnection(index, portID, conn.first, conn.second);
+          success = removeConnection(index, portID, conn.first, conn.second);
         }
 
         // failed, abort the node deletion
@@ -37,10 +36,10 @@ bool FlowSceneModel::removeNodeWithConnections(NodeIndex const& index) {
   if (!success) return false;
   
   // if we get here, then try to remove the node itsself
-  return model.removeNode(index);
+  return removeNode(index);
 }
 
-NodeIndex FlowSceneModel::createIndex(const QUuid& id, void* internalPointer)
+NodeIndex FlowSceneModel::createIndex(const QUuid& id, void* internalPointer) const
 {
   return NodeIndex(id, internalPointer, this);
 }

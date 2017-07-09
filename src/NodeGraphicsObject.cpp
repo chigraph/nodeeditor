@@ -63,7 +63,7 @@ NodeGraphicsObject(FlowScene& scene, const NodeIndex& index)
   auto onMoveSlot = [this] {
     
     // ask the model to move it
-    if (!_nodeIndex.model()->moveNode(_nodeIndex, pos())) {
+    if (!flowScene().model()->moveNode(_nodeIndex, pos())) {
       // set the location back
       setPos(_nodeIndex.model()->nodeLocation(_nodeIndex));
       moveConnections();
@@ -87,6 +87,20 @@ NodeGraphicsObject::
 index() const
 {
   return _nodeIndex;
+}
+
+
+FlowScene&
+NodeGraphicsObject::
+flowScene()
+{
+  return _scene;
+}
+
+FlowScene const&
+NodeGraphicsObject::
+flowScene() const {
+  return _scene;
 }
 
 NodeGeometry&
@@ -380,7 +394,7 @@ hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 
   _geometry.setHovered(true);
   update();
-  _nodeIndex.model()->nodeHovered(_nodeIndex, event->screenPos(), true);
+  flowScene().model()->nodeHovered(_nodeIndex, event->screenPos(), true);
   event->accept();
 }
 
@@ -391,7 +405,7 @@ hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
   _geometry.setHovered(false);
   update();
-  _nodeIndex.model()->nodeHovered(_nodeIndex, event->screenPos(), false);
+  flowScene().model()->nodeHovered(_nodeIndex, event->screenPos(), false);
   event->accept();
 }
 
@@ -421,7 +435,7 @@ mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
   QGraphicsItem::mouseDoubleClickEvent(event);
 
-  _nodeIndex.model()->nodeDoubleClicked(_nodeIndex, event->screenPos());
+  flowScene().model()->nodeDoubleClicked(_nodeIndex, event->screenPos());
 }
 
 } // namespace QtNodes

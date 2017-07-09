@@ -18,25 +18,14 @@
 #include "ConnectionGeometry.hpp"
 #include "ConnectionGraphicsObject.hpp"
 
-using QtNodes::Connection;
-using QtNodes::PortType;
-using QtNodes::PortIndex;
-using QtNodes::ConnectionState;
-using QtNodes::Node;
-using QtNodes::NodeData;
-using QtNodes::NodeDataType;
-using QtNodes::ConnectionGraphicsObject;
-using QtNodes::ConnectionGeometry;
-
-
+namespace QtNodes {
 
 Connection::
 Connection(Node& nodeIn,
            PortIndex portIndexIn,
            Node& nodeOut,
            PortIndex portIndexOut)
-  : _id(QUuid::createUuid())
-  , _outNode(&nodeOut)
+  : _outNode(&nodeOut)
   , _inNode(&nodeIn)
   , _outPortIndex(portIndexOut)
   , _inPortIndex(portIndexIn)
@@ -70,14 +59,6 @@ save() const
   }
 
   return connectionJson;
-}
-
-
-QUuid
-Connection::
-id() const
-{
-  return _id;
 }
 
 void
@@ -197,6 +178,18 @@ dataType() const
   Q_UNREACHABLE();
 }
 
+ConnectionID
+Connection::
+id() const {
+  ConnectionID ret;
+  ret.lNodeID = getNode(PortType::Out)->id();
+  ret.rNodeID = getNode(PortType::In)->id();
+  
+  ret.lPortID = getPortIndex(PortType::Out);
+  ret.rPortID = getPortIndex(PortType::In);
+  
+  return ret;
+}
 
 void
 Connection::
@@ -217,3 +210,5 @@ propagateEmptyData() const
 
   propagateData(emptyData);
 }
+
+} // namespace QtNodes

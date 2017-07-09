@@ -45,10 +45,10 @@ public:
 
   /// Get the catergory for a node type
   /// name will be from `modelRegistry()`
-  virtual QString nodeTypeCatergory(QString const& /*name*/) { return {}; }
+  virtual QString nodeTypeCatergory(QString const& /*name*/) const { return {}; }
 
   /// Get the conerter node type name, or "" if there is none.
-  virtual QString converterNode(NodeDataType const& /*lhs*/, NodeDataType const& ) { return {}; }
+  virtual QString converterNode(NodeDataType const& /*lhs*/, NodeDataType const& ) const { return {}; }
 
   // Retrieval functions
   //////////////////////
@@ -125,7 +125,7 @@ public:
   ////////////////////
   
   // try to remove all connections and then the node
-  static bool removeNodeWithConnections(NodeIndex const& index);
+  bool removeNodeWithConnections(NodeIndex const& index);
   
 public:
   
@@ -141,22 +141,17 @@ public:
 
 signals:
 
-  void nodeAboutToBeRemoved(NodeIndex const& index);
   void nodeRemoved(const QUuid& id);
   void nodeAdded(const QUuid& newID);
   void nodePortUpdated(NodeIndex const& id);
-  
   void nodeValidationUpdated(NodeIndex const& id);
-
   void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
-
   void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
-
-  void nodeMoved(NodeIndex const& index, QPointF newLocation);
+  void nodeMoved(NodeIndex const& index);
 
 protected:
 
-  NodeIndex createIndex(const QUuid& id, void* internalPointer);
+  NodeIndex createIndex(const QUuid& id, void* internalPointer) const;
 
 };
 

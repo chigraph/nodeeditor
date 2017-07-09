@@ -242,7 +242,7 @@ deleteSelectedNodes()
     if (auto n = qgraphicsitem_cast<NodeGraphicsObject*>(item)) {
       auto index = n->index();
       
-      FlowSceneModel::removeNodeWithConnections(index);
+      flowScene().model()->removeNodeWithConnections(index);
     }
   }
 
@@ -251,10 +251,8 @@ deleteSelectedNodes()
   {
     if (auto c = qgraphicsitem_cast<ConnectionGraphicsObject*>(item)) {
       
-      auto& model = *c->node(PortType::In).model();
-      
       // does't matter if it works or doesn't, at least we tried
-      model.removeConnection(c->node(PortType::Out), c->portIndex(PortType::Out), c->node(PortType::In), c->portIndex(PortType::In));
+      flowScene().model()->removeConnection(c->node(PortType::Out), c->portIndex(PortType::Out), c->node(PortType::In), c->portIndex(PortType::In));
       
     }
   }

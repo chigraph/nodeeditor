@@ -108,9 +108,13 @@ private:
   // default model class
   class DataFlowModel : public FlowSceneModel {
   public:
+    
+    DataFlowModel(std::shared_ptr<DataModelRegistry> reg);
 
     // FlowSceneModel read interface
     QStringList modelRegistry() const override;
+    QString nodeTypeCatergory(QString const& /*name*/) const override;
+    QString converterNode(NodeDataType const& /*lhs*/, NodeDataType const& ) const override;
     QList<QUuid> nodeUUids() const override;
     NodeIndex nodeIndex(const QUuid& ID) const override;
     QString nodeTypeIdentifier(NodeIndex const& index) const override;
@@ -122,9 +126,9 @@ private:
     QString nodeValidationMessage(NodeIndex const& index) const override;
     NodePainterDelegate* nodePainterDelegate(NodeIndex const& index) const override;
     unsigned int nodePortCount(NodeIndex const& index, PortType portType) const override;
-    QString nodePortCaption(NodeIndex const& index, PortIndex, PortType portType) const override;
-    NodeDataType nodePortDataType(NodeIndex const& index, PortIndex, PortType portType) const override;
-    ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex, PortType portType) const override;
+    QString nodePortCaption(NodeIndex const& index, PortIndex pIndex, PortType portType) const override;
+    NodeDataType nodePortDataType(NodeIndex const& index, PortIndex pIndex, PortType portType) const override;
+    ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex pIndex, PortType portType) const override;
     std::vector<std::pair<NodeIndex, PortIndex>> nodePortConnections(NodeIndex const& index, PortIndex id, PortType portType) const override;
 
     // FlowSceneModel write interface

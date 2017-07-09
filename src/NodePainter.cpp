@@ -12,6 +12,7 @@
 #include "NodeIndex.hpp"
 #include "FlowSceneModel.hpp"
 #include "NodePainterDelegate.hpp"
+#include "FlowScene.hpp"
 
 namespace QtNodes {
 
@@ -54,7 +55,7 @@ void
 NodePainter::
 drawNodeRect(QPainter* painter, NodeGraphicsObject const & graphicsObject)
 {
-  FlowSceneModel& model = *graphicsObject.index().model();
+  FlowSceneModel& model = *graphicsObject.flowScene().model();
   
   NodeStyle const& nodeStyle = model.nodeStyle(graphicsObject.index());
   NodeGeometry const& nodeGeometry = graphicsObject.geometry();
@@ -102,7 +103,7 @@ drawConnectionPoints(QPainter* painter, NodeGraphicsObject const & graphicsObjec
   auto const     &connectionStyle = StyleCollection::connectionStyle();
   NodeState const& nodeState = graphicsObject.nodeState();
   NodeGeometry const& nodeGeometry = graphicsObject.geometry();
-  FlowSceneModel& model = *graphicsObject.index().model();
+  const FlowSceneModel& model = *graphicsObject.flowScene().model();
 
   float diameter = nodeStyle.ConnectionPointDiameter;
   auto  reducedDiameter = diameter * 0.6;

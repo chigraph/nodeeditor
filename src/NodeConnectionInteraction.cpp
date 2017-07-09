@@ -83,7 +83,7 @@ tryConnect() const
     return false;
   }
   
-  auto model = _node.model();
+  auto model = _connection->flowScene().model();
   
   
   //Determining port types
@@ -168,7 +168,7 @@ disconnect(PortType portToDisconnect) const
     _connection->portIndex(portToDisconnect);
 
   // try to disconnect it
-  auto model = _connection->node(PortType::In).model();
+  auto model = _connection->flowScene().model();
   
   // this isn't quite right. TODO: this needs to keep the interaction alive
   return model->removeConnection(_connection->node(PortType::Out), _connection->portIndex(PortType::Out), 

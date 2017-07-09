@@ -231,7 +231,7 @@ hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 
   update();
   
-  _leftNode.model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), true);
+  flowScene().model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), true);
   
   event->accept();
 }
@@ -244,7 +244,7 @@ hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
   geometry().setHovered(false);
 
   update();
-  _leftNode.model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), false);
+  flowScene().model()->connectionHovered(_leftNode, _leftPortIndex, _rightNode, _rightPortIndex, event->screenPos(), false);
   event->accept();
 }
 

@@ -14,6 +14,7 @@
 #include "ConnectionGeometry.hpp"
 #include "QUuidStdHash.hpp"
 #include "Export.hpp"
+#include "ConnectionID.hpp"
 
 class QPointF;
 
@@ -50,10 +51,6 @@ public:
   save() const override;
 
 public:
-
-  QUuid
-  id() const;
-
   Node*
   getNode(PortType portType) const;
 
@@ -66,22 +63,23 @@ public:
   NodeDataType
   dataType() const;
 
+  ConnectionID
+  id() const;
+
 public: // data propagation
 
   void
   propagateData(std::shared_ptr<NodeData> nodeData) const;
+
   void
   propagateEmptyData() const;
 
 private:
-
-  QUuid _id;
-
-private:
   
-  void setNodeToPort(Node& node,
-              PortType portType,
-              PortIndex portIndex);
+  void 
+  setNodeToPort(Node& node,
+                PortType portType,
+                PortIndex portIndex);
 
   Node* _outNode = nullptr;
   Node* _inNode  = nullptr;

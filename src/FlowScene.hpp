@@ -10,7 +10,7 @@
 
 #include "QUuidStdHash.hpp"
 #include "Export.hpp"
-#include "NodeGraphicsObject.hpp"
+#include "ConnectionID.hpp"
 #include "DataModelRegistry.hpp"
 
 namespace QtNodes
@@ -18,6 +18,7 @@ namespace QtNodes
 
 class FlowSceneModel;
 class ConnectionGraphicsObject;
+class NodeGraphicsObject;
 
 /// Scene holds connections and nodes.
 class NODE_EDITOR_PUBLIC FlowScene
@@ -37,12 +38,22 @@ public:
   NodeGraphicsObject* nodeGraphicsObject(const NodeIndex& index);
   
 private:
+
+  void nodeRemoved(const QUuid& id);
+  void nodeAdded(const QUuid& newID);
+  void nodePortUpdated(NodeIndex const& id);
+  void nodeValidationUpdated(NodeIndex const& id);
+  void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
+  void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
+  void nodeMoved(NodeIndex const& index);
+
   FlowSceneModel* _model;
   
   std::unordered_map<QUuid, std::unique_ptr<NodeGraphicsObject>> _nodeGraphicsObjects;
+  std::unordered_map<ConnectionID, std::unique_ptr<ConnectionGraphicsObject>> _connGraphicsObjects;
 
   // This is for when you're creating a connection
-  ConnectionGraphicsObject* _temporaryGraphics = nullptr;
+  std::unique_ptr<ConnectionGraphicsObject> _temporaryConn;
   
 };
 

@@ -29,6 +29,12 @@ public:
   NodeIndex
   index() const;
   
+  FlowScene&
+  flowScene();
+  
+  FlowScene const&
+  flowScene() const;
+  
   NodeGeometry&
   geometry();
   
