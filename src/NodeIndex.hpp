@@ -49,5 +49,10 @@ private:
   FlowSceneModel* _model = nullptr;
 };
 
+inline bool operator==(NodeIndex const& lhs, NodeIndex const& rhs) {
+  return lhs.model() == rhs.model() &&
+         rhs.id()    == rhs.id();
+}
+
 }
 

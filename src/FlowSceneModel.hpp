@@ -45,10 +45,10 @@ public:
 
   /// Get the catergory for a node type
   /// name will be from `modelRegistry()`
-  virtual QString nodeTypeCatergory(QString const& name);
+  virtual QString nodeTypeCatergory(QString const& /*name*/) { return {}; }
 
   /// Get the conerter node type name, or "" if there is none.
-  virtual QString converterNode(NodeDataType const& lhs, NodeDataType const& rhs);
+  virtual QString converterNode(NodeDataType const& /*lhs*/, NodeDataType const& ) { return {}; }
 
   // Retrieval functions
   //////////////////////
@@ -99,8 +99,7 @@ public:
   virtual ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex portID, PortType portType) const = 0;
 
   /// Get a connection at a port
-  virtual std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(NodeIndex const& index, PortIndex portID) const = 0;
-
+  virtual std::vector<std::pair<NodeIndex, PortIndex>> nodePortConnections(NodeIndex const& index, PortIndex portID, PortType portTypes) const = 0;
 
   // Mutation functions
   /////////////////////
@@ -120,6 +119,16 @@ public:
   /// Move a node to a new location
   virtual bool moveNode(NodeIndex const& /*index*/, QPointF /*newLocation*/) { return false; }
   
+public:
+  
+  /// Helper functions
+  ////////////////////
+  
+  // try to remove all connections and then the node
+  static bool removeNodeWithConnections(NodeIndex const& index);
+  
+public:
+  
   
   /// Notifications
   /////////////////
@@ -134,9 +143,7 @@ signals:
 
   void nodeAboutToBeRemoved(NodeIndex const& index);
   void nodeRemoved(const QUuid& id);
-
   void nodeAdded(const QUuid& newID);
-
   void nodePortUpdated(NodeIndex const& id);
   
   void nodeValidationUpdated(NodeIndex const& id);

@@ -1,5 +1,5 @@
 #include <nodes/NodeData>
-#include <nodes/FlowScene>
+#include <nodes/DataFlowScene>
 #include <nodes/FlowView>
 #include <nodes/ConnectionStyle>
 
@@ -20,7 +20,7 @@
 #include "IntegerToDecimalModel.hpp"
 
 using QtNodes::DataModelRegistry;
-using QtNodes::FlowScene;
+using QtNodes::DataFlowScene;
 using QtNodes::FlowView;
 using QtNodes::ConnectionStyle;
 
@@ -91,16 +91,16 @@ main(int argc, char *argv[])
   QVBoxLayout *l = new QVBoxLayout(&mainWidget);
 
   l->addWidget(menuBar);
-  auto scene = new FlowScene(registerDataModels());
+  auto scene = new DataFlowScene(registerDataModels());
   l->addWidget(new FlowView(scene));
   l->setContentsMargins(0, 0, 0, 0);
   l->setSpacing(0);
 
   QObject::connect(saveAction, &QAction::triggered,
-                   scene, &FlowScene::save);
+                   scene, &DataFlowScene::save);
 
   QObject::connect(loadAction, &QAction::triggered,
-                   scene, &FlowScene::load);
+                   scene, &DataFlowScene::load);
 
   mainWidget.setWindowTitle("Dataflow tools: simplest calculator");
   mainWidget.resize(800, 600);

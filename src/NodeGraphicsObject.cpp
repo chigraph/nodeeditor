@@ -101,6 +101,13 @@ geometry() const {
   return _geometry;
 }
 
+
+NodeState&
+NodeGraphicsObject::
+nodeState() {
+  return _state;
+}
+
 NodeState const&
 NodeGraphicsObject::
 nodeState() const {
@@ -275,17 +282,7 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         }
         else // initialize new Connection
         {
-
-          // todo add to FlowScene
-          auto connection = _scene.createConnection(portToCheck,
-                                                    _node,
-                                                    portIndex);
-
-          _state.setConnection(portToCheck,
-                               portIndex,
-                               *connection);
-
-          connection->getConnectionGraphicsObject().grabMouse();
+          // TODO: make a new tmp connection object
         }
       }
     };

@@ -12,20 +12,12 @@
 #include "ConnectionGraphicsObject.hpp"
 #include "ConnectionState.hpp"
 
-using QtNodes::Node;
-using QtNodes::NodeGeometry;
-using QtNodes::NodeState;
-using QtNodes::NodeData;
-using QtNodes::NodeDataType;
-using QtNodes::NodeDataModel;
-using QtNodes::NodeGraphicsObject;
-using QtNodes::PortIndex;
-using QtNodes::PortType;
+namespace QtNodes {
 
 Node::
-Node(std::unique_ptr<NodeDataModel> && dataModel)
-  : _id(QUuid::createUuid())
-  , _nodeDataModel(std::move(dataModel))
+Node(std::unique_ptr<NodeDataModel> && dataModel, NodeIndex const& id)
+  : _nodeDataModel(std::move(dataModel))
+  , _index(id)
 {
   // propagate data: model => node
   connect(_nodeDataModel.get(), &NodeDataModel::dataUpdated,
@@ -42,13 +34,13 @@ save() const
 {
   QJsonObject nodeJson;
 
-  nodeJson["id"] = _id.toString();
+  nodeJson["id"] = _index.id().toString();
 
   nodeJson["model"] = _nodeDataModel->save();
 
   QJsonObject obj;
-  obj["x"] = _nodeDataModel->position().x();
-  obj["y"] = _nodeDataModel->position().y();
+  obj["x"] = position().x();
+  obj["y"] = position().y();
   nodeJson["position"] = obj;
 
   return nodeJson;
@@ -59,12 +51,13 @@ void
 Node::
 restore(QJsonObject const& json)
 {
-  _id = QUuid(json["id"].toString());
+  // TODO: this needs to be reimplemented
+  //_id = QUuid(json["id"].toString());
 
   QJsonObject positionJson = json["position"].toObject();
   QPointF     point(positionJson["x"].toDouble(),
                     positionJson["y"].toDouble());
-  _nodeDataModel->setPosition(point);
+  setPosition(point);
 
   _nodeDataModel->restore(json["model"].toObject());
 }
@@ -74,7 +67,22 @@ QUuid
 Node::
 id() const
 {
-  return _id;
+  return index().id();
+}
+
+
+QPointF 
+Node::
+position() const {
+  return _position;
+}
+void 
+Node::
+setPosition(QPointF const& newPos) {
+  _position = newPos;
+  
+  // emit position changed signal
+  emit positionChanged(newPos);
 }
 
 NodeDataModel*
@@ -84,6 +92,12 @@ nodeDataModel() const
   return _nodeDataModel.get();
 }
 
+NodeIndex
+Node::
+index() const
+{
+  return _index;
+}
 
 void
 Node::
@@ -100,3 +114,5 @@ onDataUpdated(PortIndex index)
 {
   auto nodeData = _nodeDataModel->outData(index);
 }
+
+} // namespace QtNodes

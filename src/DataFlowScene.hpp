@@ -1,9 +1,11 @@
 #pragma once
 
-#include "FlowView.hpp"
+#include "FlowScene.hpp"
 #include "PortType.hpp"
 #include "FlowSceneModel.hpp"
 #include "QUuidStdHash.hpp"
+#include "Node.hpp"
+#include "ConnectionID.hpp"
 
 #include <memory>
 #include <functional>
@@ -12,15 +14,18 @@
 namespace QtNodes {
   
 class Connection;
-class Node;
 class DataModelRegistry;
 class NodeDataModel;
 
-class FlowWidget : public FlowView {
+class DataFlowScene : public FlowScene {
   Q_OBJECT
 
 public:
-  FlowWidget(std::shared_ptr<DataModelRegistry> registry =
+
+
+    
+  
+  DataFlowScene(std::shared_ptr<DataModelRegistry> registry =
               std::make_shared<DataModelRegistry>());
 
   std::shared_ptr<Connection>createConnection(PortType connectedPort,
@@ -99,7 +104,7 @@ signals:
   void nodeHoverLeft(Node& n);
   
 private:
-
+  
   // default model class
   class DataFlowModel : public FlowSceneModel {
   public:
@@ -111,11 +116,16 @@ private:
     QString nodeTypeIdentifier(NodeIndex const& index) const override;
     QString nodeCaption(NodeIndex const& index) const override;
     QPointF nodeLocation(NodeIndex const& index) const override;
+    QWidget* nodeWidget(NodeIndex const& index) const override;
+    bool nodeResizable(NodeIndex const& index) const override;
+    NodeValidationState nodeValidationState(NodeIndex const& index) const override;
+    QString nodeValidationMessage(NodeIndex const& index) const override;
+    NodePainterDelegate* nodePainterDelegate(NodeIndex const& index) const override;
     unsigned int nodePortCount(NodeIndex const& index, PortType portType) const override;
     QString nodePortCaption(NodeIndex const& index, PortIndex, PortType portType) const override;
     NodeDataType nodePortDataType(NodeIndex const& index, PortIndex, PortType portType) const override;
     ConnectionPolicy nodePortConnectionPolicy(NodeIndex const& index, PortIndex, PortType portType) const override;
-    std::vector<std::pair<NodeIndex, PortIndex>> nodePortOutputConnections(NodeIndex const& index, PortIndex id) const override;
+    std::vector<std::pair<NodeIndex, PortIndex>> nodePortConnections(NodeIndex const& index, PortIndex id, PortType portType) const override;
 
     // FlowSceneModel write interface
     bool removeConnection(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID) override;
@@ -124,14 +134,17 @@ private:
     QUuid addNode(const QString& typeID, QPointF const& location) override;
     bool moveNode(NodeIndex const& index, QPointF newLocation) override;
 
-  private:
     using SharedConnection = std::shared_ptr<Connection>;
     using UniqueNode       = std::unique_ptr<Node>;
 
-    std::unordered_map<QUuid, SharedConnection> _connections;
-    std::unordered_map<QUuid, UniqueNode>       _nodes;
-    std::shared_ptr<DataModelRegistry>          _registry;
+    std::unordered_map<ConnectionID, SharedConnection> _connections;
+    std::unordered_map<QUuid, UniqueNode>              _nodes;
+    std::shared_ptr<DataModelRegistry>                 _registry;
   };
+  
+  
+  DataFlowModel* _dataFlowModel;
+
 };
 
 } // namespace QtNodes

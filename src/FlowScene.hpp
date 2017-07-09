@@ -10,12 +10,14 @@
 
 #include "QUuidStdHash.hpp"
 #include "Export.hpp"
+#include "NodeGraphicsObject.hpp"
 #include "DataModelRegistry.hpp"
 
 namespace QtNodes
 {
 
 class FlowSceneModel;
+class ConnectionGraphicsObject;
 
 /// Scene holds connections and nodes.
 class NODE_EDITOR_PUBLIC FlowScene
@@ -24,7 +26,7 @@ class NODE_EDITOR_PUBLIC FlowScene
   Q_OBJECT
 public:
 
-  FlowScene(FlowSceneModel* model = nullptr);
+  FlowScene(FlowSceneModel* model);
 
   ~FlowScene();
 
@@ -37,7 +39,7 @@ public:
 private:
   FlowSceneModel* _model;
   
-  std::unordered_map<QUuid, NodeGraphicsObject*> _nodeGraphicsObjects;
+  std::unordered_map<QUuid, std::unique_ptr<NodeGraphicsObject>> _nodeGraphicsObjects;
 
   // This is for when you're creating a connection
   ConnectionGraphicsObject* _temporaryGraphics = nullptr;
