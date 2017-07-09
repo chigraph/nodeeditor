@@ -32,12 +32,12 @@ public:
   ~FlowScene();
 
 public:
-  
+
   FlowSceneModel* model() const { return _model; }
-  
+
   NodeGraphicsObject* nodeGraphicsObject(const NodeIndex& index);
-  
-private:
+
+private slots:
 
   void nodeRemoved(const QUuid& id);
   void nodeAdded(const QUuid& newID);
@@ -46,6 +46,8 @@ private:
   void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
   void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
   void nodeMoved(NodeIndex const& index);
+
+private:
 
   FlowSceneModel* _model;
   

@@ -6,9 +6,17 @@
 namespace QtNodes {
 
 FlowScene::FlowScene(FlowSceneModel* model) 
-  : _model(model) 
+  : _model(model)
 {
-  
+  Q_ASSERT(model != nullptr);
+
+  connect(model, &FlowSceneModel::nodeRemoved, this, &FlowScene::nodeRemoved);
+  connect(model, &FlowSceneModel::nodeAdded, this, &FlowScene::nodeAdded);
+  connect(model, &FlowSceneModel::nodePortUpdated, this, &FlowScene::nodePortUpdated);
+  connect(model, &FlowSceneModel::nodeValidationUpdated, this, &FlowScene::nodeValidationUpdated);
+  connect(model, &FlowSceneModel::connectionRemoved, this, &FlowScene::connectionRemoved);
+  connect(model, &FlowSceneModel::connectionAdded, this, &FlowScene::connectionAdded);
+  connect(model, &FlowSceneModel::nodeMoved, this, &FlowScene::nodeMoved);
 }
 
 FlowScene::~FlowScene() = default;
@@ -20,6 +28,53 @@ NodeGraphicsObject* FlowScene::nodeGraphicsObject(const NodeIndex& index)
     return nullptr;
   }
   return iter->second.get();
+}
+
+void 
+FlowScene::
+nodeRemoved(const QUuid& id)
+{
+  
+}
+void
+FlowScene::
+nodeAdded(const QUuid& newID)
+{
+  auto index = model()->nodeIndex(newID);
+
+  auto ngo = std::make_unique<NodeGraphicsObject>(*this, index);
+
+  _nodeGraphicsObjects[index.id()] = std::move(ngo);
+}
+void
+FlowScene::
+nodePortUpdated(NodeIndex const& id)
+{
+
+}
+void
+FlowScene::
+nodeValidationUpdated(NodeIndex const& id)
+{
+
+}
+void
+FlowScene::
+connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID)
+{
+
+}
+void
+FlowScene::
+connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID)
+{
+
+}
+void
+FlowScene::
+nodeMoved(NodeIndex const& index)
+{
+
 }
 
 NodeGraphicsObject*

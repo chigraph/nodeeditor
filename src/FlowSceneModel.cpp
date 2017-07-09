@@ -28,6 +28,7 @@ bool FlowSceneModel::removeNodeWithConnections(NodeIndex const& index) {
         }
       }
     }
+    return true;
   };
   bool success = deleteConnections(PortType::In);
   if (!success) return false;

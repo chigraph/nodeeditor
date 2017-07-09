@@ -431,6 +431,9 @@ QUuid DataFlowScene::DataFlowModel::addNode(const QString& typeID, QPointF const
   // connect to the geometry gets updated
   connect(nodePtr, &Node::positionChanged, this, [this, nodeid](QPointF const&){ nodeMoved(nodeIndex(nodeid)); });
   
+  // tell the view
+  emit nodeAdded(nodeid);
+  
   return nodeid;
 }
 bool DataFlowScene::DataFlowModel::moveNode(NodeIndex const& index, QPointF newLocation) {
