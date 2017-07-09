@@ -5,13 +5,13 @@
 
 #include "NodeState.hpp"
 #include "NodeGeometry.hpp"
+#include "NodeIndex.hpp"
 
 class QGraphicsProxyWidget;
 
 namespace QtNodes
 {
 
-class NodeIndex;
 class FlowScene;
 
 /// Class reacts on GUI events, mouse clicks and
@@ -113,7 +113,7 @@ private:
 
   FlowScene& _scene;
   
-  const NodeIndex& _nodeIndex;
+  NodeIndex _nodeIndex;
   
   NodeGeometry _geometry;
   

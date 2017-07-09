@@ -444,7 +444,6 @@ bool DataFlowScene::DataFlowModel::moveNode(NodeIndex const& index, QPointF newL
   
   // no need to emit, it's done by the function already
   return true;
-  
 }
 
 } // namespace QtNodes

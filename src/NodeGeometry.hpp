@@ -9,11 +9,11 @@
 
 #include "PortType.hpp"
 #include "Export.hpp"
+#include "NodeIndex.hpp"
 
 namespace QtNodes
 {
 
-class NodeIndex;
 class NodeGraphicsObject;
 
 class NODE_EDITOR_PUBLIC NodeGeometry
@@ -150,7 +150,7 @@ private:
 
   QPointF _draggingPos;
 
-  const NodeIndex& _nodeIndex;
+  NodeIndex _nodeIndex;
 
   mutable QFontMetrics _fontMetrics;
   mutable QFontMetrics _boldFontMetrics;

@@ -22,6 +22,9 @@ Node(std::unique_ptr<NodeDataModel> && dataModel, QUuid const& id)
   // propagate data: model => node
   connect(_nodeDataModel.get(), &NodeDataModel::dataUpdated,
           this, &Node::onDataUpdated);
+
+  _inConnections.resize(nodeDataModel()->nPorts(PortType::In));
+  _outConnections.resize(nodeDataModel()->nPorts(PortType::Out));
 }
 
 

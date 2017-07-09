@@ -45,7 +45,6 @@ private slots:
   void nodeValidationUpdated(NodeIndex const& id);
   void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
   void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
-  void nodeMoved(NodeIndex const& index);
 
 private:
 

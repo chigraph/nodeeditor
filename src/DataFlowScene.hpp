@@ -6,6 +6,7 @@
 #include "QUuidStdHash.hpp"
 #include "Node.hpp"
 #include "ConnectionID.hpp"
+#include "Export.hpp"
 
 #include <memory>
 #include <functional>
@@ -17,14 +18,11 @@ class Connection;
 class DataModelRegistry;
 class NodeDataModel;
 
-class DataFlowScene : public FlowScene {
+class NODE_EDITOR_PUBLIC DataFlowScene : public FlowScene {
   Q_OBJECT
 
 public:
 
-
-    
-  
   DataFlowScene(std::shared_ptr<DataModelRegistry> registry =
               std::make_shared<DataModelRegistry>());
 

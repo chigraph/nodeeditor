@@ -16,7 +16,6 @@ FlowScene::FlowScene(FlowSceneModel* model)
   connect(model, &FlowSceneModel::nodeValidationUpdated, this, &FlowScene::nodeValidationUpdated);
   connect(model, &FlowSceneModel::connectionRemoved, this, &FlowScene::connectionRemoved);
   connect(model, &FlowSceneModel::connectionAdded, this, &FlowScene::connectionAdded);
-  connect(model, &FlowSceneModel::nodeMoved, this, &FlowScene::nodeMoved);
 }
 
 FlowScene::~FlowScene() = default;
@@ -34,7 +33,9 @@ void
 FlowScene::
 nodeRemoved(const QUuid& id)
 {
-  
+  // just delete it
+  auto erased = _nodeGraphicsObjects.erase(id);
+  Q_ASSERT(erased == 1);
 }
 void
 FlowScene::
@@ -67,12 +68,6 @@ connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex con
 void
 FlowScene::
 connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID)
-{
-
-}
-void
-FlowScene::
-nodeMoved(NodeIndex const& index)
 {
 
 }
