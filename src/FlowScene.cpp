@@ -33,6 +33,8 @@ void
 FlowScene::
 nodeRemoved(const QUuid& id)
 {
+  this->removeItem(_nodeGraphicsObjects[id].get());
+  
   // just delete it
   auto erased = _nodeGraphicsObjects.erase(id);
   Q_ASSERT(erased == 1);
@@ -44,6 +46,7 @@ nodeAdded(const QUuid& newID)
   auto index = model()->nodeIndex(newID);
 
   auto ngo = std::make_unique<NodeGraphicsObject>(*this, index);
+  Q_ASSERT(ngo->scene() == this);
 
   _nodeGraphicsObjects[index.id()] = std::move(ngo);
 }

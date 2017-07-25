@@ -74,13 +74,12 @@ NodeGraphicsObject(FlowScene& scene, const NodeIndex& index)
   connect(this, &QGraphicsObject::yChanged, this, onMoveSlot);
 }
 
-
 NodeGraphicsObject::
-~NodeGraphicsObject()
-{
-  _scene.removeItem(this);
+~NodeGraphicsObject() {
+  if (_proxyWidget) {
+    delete _proxyWidget->widget();
+  }
 }
-
 
 NodeIndex
 NodeGraphicsObject::

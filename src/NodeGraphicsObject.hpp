@@ -22,10 +22,9 @@ class NodeGraphicsObject : public QGraphicsObject
 
 public:
   NodeGraphicsObject(FlowScene& scene, const NodeIndex& index);
-
-  virtual
+  
   ~NodeGraphicsObject();
-
+  
   NodeIndex
   index() const;
   
