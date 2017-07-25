@@ -16,6 +16,7 @@ FlowScene::FlowScene(FlowSceneModel* model)
   connect(model, &FlowSceneModel::nodeValidationUpdated, this, &FlowScene::nodeValidationUpdated);
   connect(model, &FlowSceneModel::connectionRemoved, this, &FlowScene::connectionRemoved);
   connect(model, &FlowSceneModel::connectionAdded, this, &FlowScene::connectionAdded);
+  connect(model, &FlowSceneModel::nodeMoved, this, &FlowScene::nodeMoved);
 }
 
 FlowScene::~FlowScene() = default;
@@ -66,13 +67,94 @@ void
 FlowScene::
 connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID)
 {
+  // check the model's sanity
+#ifndef NDEBUG
+  bool checkedOut = true;
+  for (const auto& conn : model()->nodePortConnections(leftNode, leftPortID, PortType::Out)) {
+    if (conn.first == rightNode && conn.second == rightPortID) {
+      checkedOut = false;
+      break;
+    }
+  }
+  // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
+  Q_ASSERT(checkedOut);
+  checkedOut = true;
+  for (const auto& conn : model()->nodePortConnections(rightNode, rightPortID, PortType::In)) {
+    if (conn.first == leftNode && conn.second == leftPortID) {
+      checkedOut = false;
+      break;
+    }
+  }
+  // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
+  Q_ASSERT(checkedOut);
+#endif
 
+  // create a connection ID
+  ConnectionID id;
+  id.lNodeID = leftNode.id();
+  id.rNodeID = rightNode.id();
+  id.lPortID = leftPortID;
+  id.rPortID = rightPortID;
+  
+  // cgo
+  auto& cgo = *_connGraphicsObjects[id];
+  
+  // remove it from the nodes
+  auto& lngo = *nodeGraphicsObject(leftNode);
+  lngo.nodeState().eraseConnection(PortType::Out, leftPortID, cgo);
+  
+  auto& rngo = *nodeGraphicsObject(rightNode);
+  rngo.nodeState().eraseConnection(PortType::In, rightPortID, cgo);
+  
+  // remove the ConnectionGraphicsObject
+  _connGraphicsObjects.erase(id);
 }
 void
 FlowScene::
 connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID)
 {
+  // check the model's sanity
+#ifndef NDEBUG
+  bool checkedOut = false;
+  for (const auto& conn : model()->nodePortConnections(leftNode, leftPortID, PortType::Out)) {
+    if (conn.first == rightNode && conn.second == rightPortID) {
+      checkedOut = true;
+      break;
+    }
+  }
+  // if you fail here, then you're emitting connectionAdded on a connection that isn't in the model
+  Q_ASSERT(checkedOut);
+  checkedOut = false;
+  for (const auto& conn : model()->nodePortConnections(rightNode, rightPortID, PortType::In)) {
+    if (conn.first == leftNode && conn.second == leftPortID) {
+      checkedOut = true;
+      break;
+    }
+  }
+  // if you fail here, then you're emitting connectionAdded on a connection that isn't in the model
+  Q_ASSERT(checkedOut);
+#endif
+  
+  // create the cgo
+  auto cgo = std::make_unique<ConnectionGraphicsObject>(leftNode, leftPortID, rightNode, rightPortID, *this);
+  
+  // add it to the nodes
+  auto lngo = nodeGraphicsObject(leftNode);
+  lngo->nodeState().setConnection(PortType::Out, leftPortID, *cgo);
+  
+  auto rngo = nodeGraphicsObject(rightNode);
+  rngo->nodeState().setConnection(PortType::In, rightPortID, *cgo);
+  
+  // add the cgo to the map
+  _connGraphicsObjects[cgo->id()] = std::move(cgo);
+  
+}
 
+
+void
+FlowScene::
+nodeMoved(NodeIndex const& index) {
+  _nodeGraphicsObjects[index.id()]->setPos(model()->nodeLocation(index));
 }
 
 NodeGraphicsObject*

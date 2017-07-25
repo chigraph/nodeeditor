@@ -11,6 +11,7 @@
 #include "ConnectionGeometry.hpp"
 #include "NodeData.hpp"
 #include "ConnectionState.hpp"
+#include "ConnectionID.hpp"
 
 class QGraphicsSceneMouseEvent;
 
@@ -57,7 +58,10 @@ public:
 
   void
   setGeometryChanged();
-  
+
+  ConnectionID
+  id() const;
+
   NodeDataType dataType() const;
 
   /// Updates the position of both ends

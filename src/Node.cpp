@@ -54,8 +54,7 @@ void
 Node::
 restore(QJsonObject const& json)
 {
-  // TODO: this needs to be reimplemented
-  //_id = QUuid(json["id"].toString());
+  _index = QUuid(json["id"].toString());
 
   QJsonObject positionJson = json["position"].toObject();
   QPointF     point(positionJson["x"].toDouble(),
@@ -100,6 +99,8 @@ std::vector<Connection*>&
 Node::
 connections(PortType pType, PortIndex idx)
 {
+  Q_ASSERT(pType == PortType::In ? idx < _inConnections.size() : idx < _outConnections.size());
+  
   return pType == PortType::In ? _inConnections[idx] : _outConnections[idx];
 }
 

@@ -25,6 +25,9 @@ class NODE_EDITOR_PUBLIC FlowScene
   : public QGraphicsScene
 {
   Q_OBJECT
+  
+  friend NodeGraphicsObject;
+  friend ConnectionGraphicsObject;
 public:
 
   FlowScene(FlowSceneModel* model);
@@ -45,6 +48,7 @@ private slots:
   void nodeValidationUpdated(NodeIndex const& id);
   void connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
   void connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const& rightNode, PortIndex rightPortID);
+  void nodeMoved(NodeIndex const& index);
 
 private:
 
@@ -55,7 +59,7 @@ private:
 
   // This is for when you're creating a connection
   std::unique_ptr<ConnectionGraphicsObject> _temporaryConn;
-  
+
 };
 
 NodeGraphicsObject*

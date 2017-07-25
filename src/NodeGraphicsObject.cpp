@@ -291,11 +291,33 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
 
           NodeConnectionInteraction interaction(_nodeIndex, *con);
 
-          interaction.disconnect(portToCheck);
+          if (!interaction.disconnect(portToCheck)) {
+            return;
+          }
+          
+          // initialize a new connection
+          // this is the same as below except inverted
+          if (portToCheck == PortType::In) {
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(_nodeIndex, portIndex, NodeIndex{}, -1, _scene);
+            _scene._temporaryConn->geometry().setEndPoint(PortType::In, event->scenePos());
+          } else {
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, _nodeIndex, portIndex, _scene);
+            _scene._temporaryConn->geometry().setEndPoint(PortType::Out, event->scenePos());
+          }
+          
+          _scene._temporaryConn->grabMouse();
         }
         else // initialize new Connection
         {
-          // TODO: make a new tmp connection object
+          if (portToCheck == PortType::In) {
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, _nodeIndex, portIndex, _scene);
+            _scene._temporaryConn->geometry().setEndPoint(PortType::Out, event->scenePos());
+          } else {
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(_nodeIndex, portIndex, NodeIndex{}, -1, _scene);
+            _scene._temporaryConn->geometry().setEndPoint(PortType::In, event->scenePos());
+          }
+          
+          _scene._temporaryConn->grabMouse();
         }
       }
     };

@@ -342,12 +342,12 @@ bool DataFlowScene::DataFlowModel::removeConnection(NodeIndex const& leftNodeIdx
   connID.rPortID = rightPortID;
   
   // remove it from the nodes
-  auto& leftConns = leftNode->connections(PortType::In, leftPortID);
+  auto& leftConns = leftNode->connections(PortType::Out, leftPortID);
   auto iter = std::find_if(leftConns.begin(), leftConns.end(), [&](Connection* conn){ return conn->id() == connID; });
   Q_ASSERT(iter != leftConns.end());
   leftConns.erase(iter);
   
-  auto& rightConns = rightNode->connections(PortType::Out, rightPortID);
+  auto& rightConns = rightNode->connections(PortType::In, rightPortID);
   iter = std::find_if(rightConns.begin(), rightConns.end(), [&](Connection* conn){ return conn->id() == connID; });
   Q_ASSERT(iter != rightConns.end());
   rightConns.erase(iter);

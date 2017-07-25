@@ -151,7 +151,10 @@ contextMenuEvent(QContextMenuEvent *event)
     QPointF posView = this->mapToScene(pos);
 
     // try to create the node
-    _scene->model()->addNode(modelName, posView);
+    auto uuid = _scene->model()->addNode(modelName, posView);
+    
+    // move it to the cursor location
+    _scene->model()->moveNode(_scene->model()->nodeIndex(uuid), posView);
 
     modelMenu.close();
   });

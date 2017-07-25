@@ -127,14 +127,14 @@ tryConnect() const
       if (requiredPort == PortType::In)
       {
         // hopefully this works...don't fail even if it doesn't
-        model->addConnection(converterNode, 0, outNode, outNodePortIndex);
-        model->addConnection(_node, portIndex, converterNode, 0);
+        model->addConnection(converterNode, 0, _node, portIndex);
+        model->addConnection(outNode, outNodePortIndex, converterNode, 0);
       }
       else
       {
         // hopefully this works...don't fail even if it doesn't
-        model->addConnection(converterNode, 0, _node, portIndex);
-        model->addConnection(outNode, outNodePortIndex, converterNode, 0);
+        model->addConnection(converterNode, 0, outNode, outNodePortIndex);
+        model->addConnection(_node, portIndex, converterNode, 0);
       }
 
     } else {
