@@ -288,6 +288,12 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         if (!connections.empty() && model.nodePortConnectionPolicy(_nodeIndex, portIndex, portToCheck) == ConnectionPolicy::One)
         {
           auto con = connections[0];
+          
+          // cache the nodes and port indicies because the connection will be deleted
+          auto lNode = con->node(PortType::Out);
+          auto rNode = con->node(PortType::In);
+          auto lPortIdx = con->portIndex(PortType::Out);
+          auto rPortIdx = con->portIndex(PortType::In);
 
           NodeConnectionInteraction interaction(_nodeIndex, *con);
 
@@ -296,12 +302,11 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
           }
           
           // initialize a new connection
-          // this is the same as below except inverted
           if (portToCheck == PortType::In) {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(_nodeIndex, portIndex, NodeIndex{}, -1, _scene);
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(lNode, lPortIdx, NodeIndex{}, -1, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::In, event->scenePos());
           } else {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, _nodeIndex, portIndex, _scene);
+            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, rNode, rPortIdx, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::Out, event->scenePos());
           }
           

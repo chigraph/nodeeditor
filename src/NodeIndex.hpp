@@ -54,5 +54,9 @@ inline bool operator==(NodeIndex const& lhs, NodeIndex const& rhs) {
          rhs.id()    == rhs.id();
 }
 
+inline bool operator!=(NodeIndex const& lhs, NodeIndex const& rhs) {
+  return !(lhs == rhs);
+}
+
 }
 

@@ -69,24 +69,14 @@ connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex con
 {
   // check the model's sanity
 #ifndef NDEBUG
-  bool checkedOut = true;
   for (const auto& conn : model()->nodePortConnections(leftNode, leftPortID, PortType::Out)) {
-    if (conn.first == rightNode && conn.second == rightPortID) {
-      checkedOut = false;
-      break;
-    }
+    // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
+    Q_ASSERT (conn.first != rightNode && conn.second != rightPortID);
   }
-  // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
-  Q_ASSERT(checkedOut);
-  checkedOut = true;
   for (const auto& conn : model()->nodePortConnections(rightNode, rightPortID, PortType::In)) {
-    if (conn.first == leftNode && conn.second == leftPortID) {
-      checkedOut = false;
-      break;
-    }
+    // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
+    Q_ASSERT (conn.first != leftNode && conn.second != leftPortID);
   }
-  // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
-  Q_ASSERT(checkedOut);
 #endif
 
   // create a connection ID
