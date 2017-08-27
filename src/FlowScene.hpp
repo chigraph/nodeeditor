@@ -39,6 +39,8 @@ public:
   FlowSceneModel* model() const { return _model; }
 
   NodeGraphicsObject* nodeGraphicsObject(const NodeIndex& index);
+  
+  std::vector<NodeIndex> selectedNodes() const;
 
 private slots:
 

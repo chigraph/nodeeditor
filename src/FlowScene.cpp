@@ -21,7 +21,9 @@ FlowScene::FlowScene(FlowSceneModel* model)
 
 FlowScene::~FlowScene() = default;
 
-NodeGraphicsObject* FlowScene::nodeGraphicsObject(const NodeIndex& index)
+NodeGraphicsObject*
+FlowScene::
+nodeGraphicsObject(const NodeIndex& index)
 {
   auto iter = _nodeGraphicsObjects.find(index.id());
   if (iter == _nodeGraphicsObjects.end()) {
@@ -29,6 +31,29 @@ NodeGraphicsObject* FlowScene::nodeGraphicsObject(const NodeIndex& index)
   }
   return iter->second.get();
 }
+
+std::vector<NodeIndex>
+FlowScene::
+selectedNodes() const {
+  QList<QGraphicsItem*> graphicsItems = selectedItems();
+
+  std::vector<NodeIndex> ret;
+  ret.reserve(graphicsItems.size());
+
+  for (QGraphicsItem* item : graphicsItems)
+  {
+    auto ngo = qgraphicsitem_cast<NodeGraphicsObject*>(item);
+
+    if (ngo != nullptr)
+    {
+      ret.push_back(ngo->index());
+    }
+  }
+
+  return ret;
+
+}
+
 
 void 
 FlowScene::

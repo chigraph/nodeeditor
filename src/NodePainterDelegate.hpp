@@ -18,6 +18,6 @@ public:
 
   virtual void
   paint(QPainter* painter,
-        NodeGraphicsObject const& geometry) = 0;
+        NodeGraphicsObject const& ngo) = 0;
 };
 }
