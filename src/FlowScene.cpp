@@ -17,6 +17,12 @@ FlowScene::FlowScene(FlowSceneModel* model)
   connect(model, &FlowSceneModel::connectionRemoved, this, &FlowScene::connectionRemoved);
   connect(model, &FlowSceneModel::connectionAdded, this, &FlowScene::connectionAdded);
   connect(model, &FlowSceneModel::nodeMoved, this, &FlowScene::nodeMoved);
+
+  // emit node added on all the existing nodes
+  for (const auto& n : model->nodeUUids()) {
+    nodeAdded(n);
+    nodePortUpdated(model->nodeIndex(n));
+  }
 }
 
 FlowScene::~FlowScene() = default;
@@ -69,18 +75,23 @@ void
 FlowScene::
 nodeAdded(const QUuid& newID)
 {
+  Q_ASSERT(!newID.isNull());
+
   auto index = model()->nodeIndex(newID);
+  Q_ASSERT(index.isValid());
 
   auto ngo = std::make_unique<NodeGraphicsObject>(*this, index);
   Q_ASSERT(ngo->scene() == this);
 
   _nodeGraphicsObjects[index.id()] = std::move(ngo);
+
+  nodeMoved(index);
 }
 void
 FlowScene::
 nodePortUpdated(NodeIndex const& id)
 {
-
+  
 }
 void
 FlowScene::
