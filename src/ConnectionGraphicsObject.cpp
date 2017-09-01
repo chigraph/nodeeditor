@@ -42,13 +42,17 @@ ConnectionGraphicsObject(const NodeIndex& leftNode, PortIndex leftPortIndex, con
   
   // initialize the end points
   if (leftNode.isValid()) {
-    auto& ngo = *_scene.nodeGraphicsObject(leftNode);
-    _geometry.moveEndPoint(PortType::Out,  ngo.geometry().portScenePosition(leftPortIndex, PortType::Out, ngo.sceneTransform()));
+    auto ngo = _scene.nodeGraphicsObject(leftNode);
+    Q_ASSERT(ngo != nullptr);
+
+    _geometry.moveEndPoint(PortType::Out,  ngo->geometry().portScenePosition(leftPortIndex, PortType::Out, ngo->sceneTransform()));
   }
   
   if (rightNode.isValid()) {
-    auto& ngo = *_scene.nodeGraphicsObject(rightNode);
-    _geometry.moveEndPoint(PortType::In, ngo.geometry().portScenePosition(rightPortIndex, PortType::In, ngo.sceneTransform()));
+    auto ngo = _scene.nodeGraphicsObject(rightNode);
+    Q_ASSERT(ngo != nullptr);
+
+    _geometry.moveEndPoint(PortType::In, ngo->geometry().portScenePosition(rightPortIndex, PortType::In, ngo->sceneTransform()));
   }
 
   setZValue(-1.0);

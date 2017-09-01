@@ -21,7 +21,27 @@ FlowScene::FlowScene(FlowSceneModel* model)
   // emit node added on all the existing nodes
   for (const auto& n : model->nodeUUids()) {
     nodeAdded(n);
-    nodePortUpdated(model->nodeIndex(n));
+  }
+  
+  // add connections
+  for (const auto& n : model->nodeUUids()) {
+    auto id = model->nodeIndex(n);
+    
+    // query the number of ports   
+    auto numPorts = model->nodePortCount(id, PortType::Out);
+    
+    // go through them and add the connections
+    for (auto portID = 0u; portID < numPorts; ++portID) {
+      // go through connections
+      auto connections = model->nodePortConnections(id, portID, PortType::Out);
+      
+      // validate the sanity of the model--make sure if it is marked as one connection per port then there is no more than one connection
+      Q_ASSERT(model->nodePortConnectionPolicy(id, portID, PortType::Out) == ConnectionPolicy::Many || connections.size() <= 1);
+      
+      for (const auto& conn : connections) {
+        connectionAdded(id, portID, conn.first, conn.second);
+      }
+    }
   }
 }
 
@@ -92,6 +112,9 @@ FlowScene::
 nodePortUpdated(NodeIndex const& id)
 {
   
+  auto thisNodeNGO = nodeGraphicsObject(id);
+  Q_ASSERT(thisNodeNGO);
+
 }
 void
 FlowScene::
