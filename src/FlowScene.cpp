@@ -26,6 +26,7 @@ FlowScene::FlowScene(FlowSceneModel* model)
   // add connections
   for (const auto& n : model->nodeUUids()) {
     auto id = model->nodeIndex(n);
+    Q_ASSERT(id.isValid());
     
     // query the number of ports   
     auto numPorts = model->nodePortCount(id, PortType::Out);
@@ -164,6 +165,10 @@ connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const
 {
   // check the model's sanity
 #ifndef NDEBUG
+  // if you fail here, then you're emitting connectionAdded on a portID that doesn't exist
+  Q_ASSERT(leftPortID < model()->nodePortCount(leftNode, PortType::Out));
+  Q_ASSERT(rightPortID < model()->nodePortCount(rightNode, PortType::In));
+
   bool checkedOut = false;
   for (const auto& conn : model()->nodePortConnections(leftNode, leftPortID, PortType::Out)) {
     if (conn.first == rightNode && conn.second == rightPortID) {
