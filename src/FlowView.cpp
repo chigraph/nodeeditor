@@ -155,8 +155,11 @@ contextMenuEvent(QContextMenuEvent *event)
     // try to create the node
     auto uuid = _scene->model()->addNode(modelName, posView);
     
-    // move it to the cursor location
-    _scene->model()->moveNode(_scene->model()->nodeIndex(uuid), posView);
+    // if the node creation failed, then don't add it
+    if (!uuid.isNull()) {
+        // move it to the cursor location
+        _scene->model()->moveNode(_scene->model()->nodeIndex(uuid), posView);
+    }
 
     modelMenu.close();
   });
