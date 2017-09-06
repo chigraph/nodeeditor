@@ -264,11 +264,15 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   {
     node->resetReactionToConnection();
     Q_ASSERT(this == _scene._temporaryConn.get());
+
+    _scene.removeItem(this);
     _scene._temporaryConn = nullptr;
   }
   else if (state().requiresPort())
   {
     Q_ASSERT(this == _scene._temporaryConn.get());
+
+    _scene.removeItem(this);
     _scene._temporaryConn = nullptr;
   }
 }
