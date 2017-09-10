@@ -51,7 +51,7 @@ private:
 
 inline bool operator==(NodeIndex const& lhs, NodeIndex const& rhs) {
   return lhs.model() == rhs.model() &&
-         rhs.id()    == rhs.id();
+         lhs.id()    == rhs.id();
 }
 
 inline bool operator!=(NodeIndex const& lhs, NodeIndex const& rhs) {

@@ -62,7 +62,6 @@ ConnectionGraphicsObject(const NodeIndex& leftNode, PortIndex leftPortIndex, con
 ConnectionGraphicsObject::
 ~ConnectionGraphicsObject()
 {
-  _scene.removeItem(this);
 }
 
 

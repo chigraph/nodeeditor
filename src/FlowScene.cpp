@@ -211,11 +211,11 @@ connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex con
 #ifndef NDEBUG
   for (const auto& conn : model()->nodePortConnections(leftNode, leftPortID, PortType::Out)) {
     // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
-    Q_ASSERT (conn.first != rightNode && conn.second != rightPortID);
+    Q_ASSERT (conn.first != rightNode || conn.second != rightPortID);
   }
   for (const auto& conn : model()->nodePortConnections(rightNode, rightPortID, PortType::In)) {
     // if you fail here, then you're emitting connectionRemoved on a connection that is in the model
-    Q_ASSERT (conn.first != leftNode && conn.second != leftPortID);
+    Q_ASSERT (conn.first != leftNode || conn.second != leftPortID);
   }
 #endif
 
