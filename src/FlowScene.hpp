@@ -56,11 +56,11 @@ private:
 
   FlowSceneModel* _model;
   
-  std::unordered_map<QUuid, std::unique_ptr<NodeGraphicsObject>> _nodeGraphicsObjects;
-  std::unordered_map<ConnectionID, std::unique_ptr<ConnectionGraphicsObject>> _connGraphicsObjects;
+  std::unordered_map<QUuid, NodeGraphicsObject*> _nodeGraphicsObjects;
+  std::unordered_map<ConnectionID, ConnectionGraphicsObject*> _connGraphicsObjects;
 
   // This is for when you're creating a connection
-  std::unique_ptr<ConnectionGraphicsObject> _temporaryConn;
+  ConnectionGraphicsObject* _temporaryConn = nullptr;
 
 };
 

@@ -303,10 +303,12 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
           
           // initialize a new connection
           if (portToCheck == PortType::In) {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(lNode, lPortIdx, NodeIndex{}, -1, _scene);
+            Q_ASSERT(_scene._temporaryConn == nullptr);
+            _scene._temporaryConn = new ConnectionGraphicsObject(lNode, lPortIdx, NodeIndex{}, -1, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::In, event->scenePos());
           } else {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, rNode, rPortIdx, _scene);
+            Q_ASSERT(_scene._temporaryConn == nullptr);
+            _scene._temporaryConn = new ConnectionGraphicsObject(NodeIndex{}, -1, rNode, rPortIdx, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::Out, event->scenePos());
           }
           
@@ -315,10 +317,12 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
         else // initialize new Connection
         {
           if (portToCheck == PortType::In) {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(NodeIndex{}, -1, _nodeIndex, portIndex, _scene);
+            Q_ASSERT(_scene._temporaryConn == nullptr);
+            _scene._temporaryConn = new ConnectionGraphicsObject(NodeIndex{}, -1, _nodeIndex, portIndex, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::Out, event->scenePos());
           } else {
-            _scene._temporaryConn = std::make_unique<ConnectionGraphicsObject>(_nodeIndex, portIndex, NodeIndex{}, -1, _scene);
+            Q_ASSERT(_scene._temporaryConn == nullptr);
+            _scene._temporaryConn = new ConnectionGraphicsObject(_nodeIndex, portIndex, NodeIndex{}, -1, _scene);
             _scene._temporaryConn->geometry().setEndPoint(PortType::In, event->scenePos());
           }
           

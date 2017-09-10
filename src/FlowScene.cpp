@@ -56,7 +56,7 @@ nodeGraphicsObject(const NodeIndex& index)
   if (iter == _nodeGraphicsObjects.end()) {
     return nullptr;
   }
-  return iter->second.get();
+  return iter->second;
 }
 
 std::vector<NodeIndex>
@@ -86,9 +86,20 @@ void
 FlowScene::
 nodeRemoved(const QUuid& id)
 {
-  this->removeItem(_nodeGraphicsObjects[id].get());
-  
+  auto ngo = _nodeGraphicsObjects[id];
+#ifndef NDEBUG
+  // make sure there are no connections left
+
+    for (const auto& connPtrSet : ngo->nodeState().getEntries(PortType::In)) {
+    Q_ASSERT(connPtrSet.size() == 0);
+  }
+  for (const auto& connPtrSet : ngo->nodeState().getEntries(PortType::Out)) {
+    Q_ASSERT(connPtrSet.size() == 0);
+  }
+#endif
+
   // just delete it
+  delete ngo;
   auto erased = _nodeGraphicsObjects.erase(id);
   Q_ASSERT(erased == 1);
 }
@@ -96,15 +107,18 @@ void
 FlowScene::
 nodeAdded(const QUuid& newID)
 {
+  // make sure the ID doens't exist already
+  Q_ASSERT(_nodeGraphicsObjects.find(newID) == _nodeGraphicsObjects.end());
+  
   Q_ASSERT(!newID.isNull());
 
   auto index = model()->nodeIndex(newID);
   Q_ASSERT(index.isValid());
 
-  auto ngo = std::make_unique<NodeGraphicsObject>(*this, index);
+  auto ngo = new NodeGraphicsObject(*this, index);
   Q_ASSERT(ngo->scene() == this);
 
-  _nodeGraphicsObjects[index.id()] = std::move(ngo);
+  _nodeGraphicsObjects[index.id()] = ngo;
 
   nodeMoved(index);
 }
@@ -116,6 +130,72 @@ nodePortUpdated(NodeIndex const& id)
   auto thisNodeNGO = nodeGraphicsObject(id);
   Q_ASSERT(thisNodeNGO);
 
+  // remove all the connections
+  auto remConns = [&](PortType ty) {
+    for (const auto& conns : thisNodeNGO->nodeState().getEntries(ty)) {
+
+      while (!conns.empty()) {
+
+        auto& conn = conns[0];
+
+        // remove it from the nodes
+        auto& otherNgo = *nodeGraphicsObject(conn->node(oppositePort(ty)));
+        otherNgo.nodeState().eraseConnection(oppositePort(ty), conn->portIndex(oppositePort(ty)), *conn);
+
+        auto& thisNgo = *nodeGraphicsObject(conn->node(ty));
+        thisNgo.nodeState().eraseConnection(ty, conn->portIndex(ty), *conn);
+
+        // remove the ConnectionGraphicsObject
+        _connGraphicsObjects.erase(conn->id());
+        delete conn;
+      }
+    }
+
+  };
+  remConns(PortType::In);
+  remConns(PortType::Out);
+  
+  // recreate the NGO
+  
+  // just delete it
+  delete thisNodeNGO;
+  auto erased = _nodeGraphicsObjects.erase(id.id());
+  Q_ASSERT(erased == 1);
+ 
+  // create it
+  auto ngo = new NodeGraphicsObject(*this, id);
+  Q_ASSERT(ngo->scene() == this);
+
+  _nodeGraphicsObjects[id.id()] = ngo;
+
+  nodeMoved(id);
+  
+  // add the connections back
+  auto readdConns = [&](PortType ty) {
+            
+    // query the number of ports   
+    auto numPorts = model()->nodePortCount(id, ty);
+    
+    for (auto portID = 0u; portID < numPorts; ++portID) {
+
+      // go through connections
+      auto connections = model()->nodePortConnections(id, portID, ty);
+      
+      // validate the sanity of the model--make sure if it is marked as one connection per port then there is no more than one connection
+      Q_ASSERT(model()->nodePortConnectionPolicy(id, portID, ty) == ConnectionPolicy::Many || connections.size() <= 1);
+      
+      for (const auto& conn : connections) {
+        
+        if (ty == PortType::Out) {
+          connectionAdded(id, portID, conn.first, conn.second);
+        } else {
+          connectionAdded(conn.first, conn.second, id, portID);
+        }
+      }
+    }
+  };
+  readdConns(PortType::In);
+  readdConns(PortType::Out);
 }
 void
 FlowScene::
@@ -157,6 +237,7 @@ connectionRemoved(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex con
   rngo.nodeState().eraseConnection(PortType::In, rightPortID, cgo);
   
   // remove the ConnectionGraphicsObject
+  delete &cgo;
   _connGraphicsObjects.erase(id);
 }
 void
@@ -190,7 +271,7 @@ connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const
 #endif
   
   // create the cgo
-  auto cgo = std::make_unique<ConnectionGraphicsObject>(leftNode, leftPortID, rightNode, rightPortID, *this);
+  auto cgo = new ConnectionGraphicsObject(leftNode, leftPortID, rightNode, rightPortID, *this);
   
   // add it to the nodes
   auto lngo = nodeGraphicsObject(leftNode);
@@ -200,10 +281,9 @@ connectionAdded(NodeIndex const& leftNode, PortIndex leftPortID, NodeIndex const
   rngo->nodeState().setConnection(PortType::In, rightPortID, *cgo);
   
   // add the cgo to the map
-  _connGraphicsObjects[cgo->id()] = std::move(cgo);
+  _connGraphicsObjects[cgo->id()] = cgo;
   
 }
-
 
 void
 FlowScene::
