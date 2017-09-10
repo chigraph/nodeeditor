@@ -58,5 +58,5 @@ inline bool operator!=(NodeIndex const& lhs, NodeIndex const& rhs) {
   return !(lhs == rhs);
 }
 
-}
+} // namespace QtNodes
 
