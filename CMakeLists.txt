@@ -17,6 +17,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 option(BUILD_EXAMPLES "Build Examples" ON)
 
@@ -44,7 +45,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE LIB_CPPS  ./src/*.cpp )
 
-qt5_add_resources(RESOURCES ./resources/resources.qrc)
+set(RESOURCES ./resources/resources.qrc)
 
 # Tell CMake to create the helloworld executable
 add_library(nodes SHARED ${LIB_CPPS} ${RESOURCES})
