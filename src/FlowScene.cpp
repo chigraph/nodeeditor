@@ -132,12 +132,11 @@ nodePortUpdated(NodeIndex const& id)
 
   // remove all the connections
   auto remConns = [&](PortType ty) {
-    for (const auto& conns : thisNodeNGO->nodeState().getEntries(ty)) {
+    for (auto i = 0ull; i < thisNodeNGO->nodeState().getEntries(ty).size(); ++i) {
 
-      while (!conns.empty()) {
-
-        auto& conn = conns[0];
-
+      while (!thisNodeNGO->nodeState().getEntries(ty)[i].empty()) {
+        
+        auto conn = thisNodeNGO->nodeState().getEntries(ty)[i][0];
         // remove it from the nodes
         auto& otherNgo = *nodeGraphicsObject(conn->node(oppositePort(ty)));
         otherNgo.nodeState().eraseConnection(oppositePort(ty), conn->portIndex(oppositePort(ty)), *conn);
@@ -150,7 +149,6 @@ nodePortUpdated(NodeIndex const& id)
         delete conn;
       }
     }
-
   };
   remConns(PortType::In);
   remConns(PortType::Out);
