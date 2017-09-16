@@ -44,6 +44,13 @@ FlowScene::FlowScene(FlowSceneModel* model)
       }
     }
   }
+  
+  // for some reason these end up in the wrong spot, fix that
+  for (const auto& n : model->nodeUUids()) {
+    auto ngo = nodeGraphicsObject(model->nodeIndex(n));
+    ngo->geometry().recalculateSize();
+    ngo->moveConnections();
+  }
 }
 
 FlowScene::~FlowScene() = default;
@@ -199,7 +206,13 @@ void
 FlowScene::
 nodeValidationUpdated(NodeIndex const& id)
 {
-
+  // repaint
+  auto ngo = nodeGraphicsObject(id);
+  ngo->setGeometryChanged();
+  ngo->geometry().recalculateSize();
+  ngo->moveConnections();
+  ngo->update();
+  
 }
 void
 FlowScene::
