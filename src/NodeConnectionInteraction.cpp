@@ -142,10 +142,6 @@ tryConnect() const
       return false;
     }
 
-    //Delete the users connection, we already replaced it.
-    //_scene->deleteConnection(*_connection);
-    // TODO: somehow delete this
-    
     return true;
   }
 
@@ -164,13 +160,9 @@ bool
 NodeConnectionInteraction::
 disconnect(PortType portToDisconnect) const
 {
-  PortIndex portIndex =
-    _connection->portIndex(portToDisconnect);
-
   // try to disconnect it
   auto model = _connection->flowScene().model();
   
-  // this isn't quite right. TODO: this needs to keep the interaction alive
   return model->removeConnection(_connection->node(PortType::Out), _connection->portIndex(PortType::Out), 
                                  _connection->node(PortType::In), _connection->portIndex(PortType::In));
 }
