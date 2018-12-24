@@ -4,8 +4,7 @@
 
 #include "Export.hpp"
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 class NodeGraphicsObject;
 class NodeIndex;
@@ -15,13 +14,10 @@ class NODE_EDITOR_PUBLIC NodePainterDelegate
 {
 
 public:
+  virtual ~NodePainterDelegate() = default;
 
-  virtual
-  ~NodePainterDelegate() = default;
-
-  virtual void
-  paint(QPainter* painter,
-        NodeGeometry const& ngo,
-        NodeIndex const& index) = 0;
+  virtual void paint(QPainter* painter,
+                     NodeGeometry const& ngo,
+                     NodeIndex const& index) = 0;
 };
 }

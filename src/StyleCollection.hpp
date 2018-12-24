@@ -1,57 +1,37 @@
 #pragma once
 
-#include "NodeStyle.hpp"
 #include "ConnectionStyle.hpp"
 #include "FlowViewStyle.hpp"
+#include "NodeStyle.hpp"
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 class StyleCollection
 {
 public:
+  static NodeStyle const& nodeStyle();
 
-  static
-  NodeStyle const&
-  nodeStyle();
+  static ConnectionStyle const& connectionStyle();
 
-  static
-  ConnectionStyle const&
-  connectionStyle();
-
-  static
-  FlowViewStyle const&
-  flowViewStyle();
+  static FlowViewStyle const& flowViewStyle();
 
 public:
+  static void setNodeStyle(NodeStyle);
 
-  static
-  void
-  setNodeStyle(NodeStyle);
+  static void setConnectionStyle(ConnectionStyle);
 
-  static
-  void
-  setConnectionStyle(ConnectionStyle);
-
-  static
-  void
-  setFlowViewStyle(FlowViewStyle);
+  static void setFlowViewStyle(FlowViewStyle);
 
 private:
-
   StyleCollection() = default;
 
   StyleCollection(StyleCollection const&) = delete;
 
-  StyleCollection&
-  operator=(StyleCollection const&) = delete;
+  StyleCollection& operator=(StyleCollection const&) = delete;
 
-  static
-  StyleCollection&
-  instance();
+  static StyleCollection& instance();
 
 private:
-
   NodeStyle _nodeStyle;
 
   ConnectionStyle _connectionStyle;

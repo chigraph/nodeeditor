@@ -11,16 +11,11 @@ using QtNodes::NodeDataType;
 using QtNodes::PortIndex;
 using QtNodes::PortType;
 
-namespace
-{
+namespace {
 class StubModelStaticName : public StubNodeDataModel
 {
 public:
-  static QString
-  Name()
-  {
-    return "Name";
-  }
+  static QString Name() { return "Name"; }
 };
 }
 
