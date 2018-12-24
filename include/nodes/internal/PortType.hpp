@@ -1,10 +1,9 @@
 #pragma once
 
-#include <utility>
 #include <QtCore/QUuid>
+#include <utility>
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 enum class PortType
 {
@@ -33,23 +32,19 @@ struct Port
     , index(i)
   {}
 
-  bool
-  indexIsValid() { return index != INVALID; }
+  bool indexIsValid() { return index != INVALID; }
 
-  bool
-  portTypeIsValid() { return type != PortType::None; }
+  bool portTypeIsValid() { return type != PortType::None; }
 };
 
-//using PortAddress = std::pair<QUuid, PortIndex>;
+// using PortAddress = std::pair<QUuid, PortIndex>;
 
-inline
-PortType
+inline PortType
 oppositePort(PortType port)
 {
   PortType result = PortType::None;
 
-  switch (port)
-  {
+  switch (port) {
     case PortType::In:
       result = PortType::Out;
       break;

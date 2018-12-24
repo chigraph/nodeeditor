@@ -5,35 +5,26 @@
 #include "Export.hpp"
 #include "Style.hpp"
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 class NODE_EDITOR_PUBLIC NodeStyle : public Style
 {
 public:
-
   NodeStyle();
 
   NodeStyle(QString jsonText);
 
 public:
-
-  static void
-  setNodeStyle(QString jsonText);
+  static void setNodeStyle(QString jsonText);
 
 private:
+  void loadJsonText(QString jsonText) override;
 
-  void
-  loadJsonText(QString jsonText) override;
+  void loadJsonFile(QString fileName) override;
 
-  void
-  loadJsonFile(QString fileName) override;
-
-  void
-  loadJsonFromByteArray(QByteArray const &byteArray) override;
+  void loadJsonFromByteArray(QByteArray const& byteArray) override;
 
 public:
-
   QColor NormalBoundaryColor;
   QColor SelectedBoundaryColor;
   QColor GradientColor0;

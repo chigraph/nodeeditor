@@ -2,8 +2,7 @@
 
 #include <QtGui/QPainter>
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 class ConnectionGeometry;
 class ConnectionGraphicsObject;
@@ -11,14 +10,9 @@ class ConnectionGraphicsObject;
 class ConnectionPainter
 {
 public:
+  static void paint(QPainter* painter,
+                    ConnectionGraphicsObject const& connection);
 
-  static
-  void
-  paint(QPainter* painter,
-        ConnectionGraphicsObject const& connection);
-
-  static
-  QPainterPath
-  getPainterStroke(ConnectionGeometry const& geom);
+  static QPainterPath getPainterStroke(ConnectionGeometry const& geom);
 };
 }

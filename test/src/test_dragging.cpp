@@ -15,8 +15,8 @@
 #include "StubNodeDataModel.hpp"
 
 using QtNodes::Connection;
-using QtNodes::DataModelRegistry;
 using QtNodes::DataFlowScene;
+using QtNodes::DataModelRegistry;
 using QtNodes::FlowView;
 using QtNodes::Node;
 using QtNodes::NodeData;
@@ -47,7 +47,7 @@ TEST_CASE("Dragging node changes position", "[gui]")
     scClickPos = QPointF(ngo.sceneTransform().map(scClickPos).toPoint());
 
     QPoint vwClickPos = view.mapFromScene(scClickPos);
-    QPoint vwDestPos  = vwClickPos + QPoint(10, 20);
+    QPoint vwDestPos = vwClickPos + QPoint(10, 20);
 
     QPointF scExpectedDelta = view.mapToScene(vwDestPos) - scClickPos;
 
@@ -57,11 +57,12 @@ TEST_CASE("Dragging node changes position", "[gui]")
     CAPTURE(scExpectedDelta);
 
     QTest::mouseMove(view.windowHandle(), vwClickPos);
-    QTest::mousePress(view.windowHandle(), Qt::LeftButton, Qt::NoModifier, vwClickPos);
+    QTest::mousePress(
+      view.windowHandle(), Qt::LeftButton, Qt::NoModifier, vwClickPos);
     QTest::mouseMove(view.windowHandle(), vwDestPos);
 
-    QPointF scDelta           = node.position() - scPosBefore;
-    QPoint roundDelta         = scDelta.toPoint();
+    QPointF scDelta = node.position() - scPosBefore;
+    QPoint roundDelta = scDelta.toPoint();
     QPoint roundExpectedDelta = scExpectedDelta.toPoint();
 
     CHECK(roundDelta == roundExpectedDelta);

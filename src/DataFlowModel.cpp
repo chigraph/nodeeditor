@@ -1,67 +1,57 @@
 #include "DataFlowModel.hpp"
-#include "Node.hpp"
 #include "Connection.hpp"
+#include "Node.hpp"
 
-using QtNodes::DataFlowModel;
-using QtNodes::NodeIndex;
-using QtNodes::NodeValidationState;
-using QtNodes::DataModelRegistry;
-using QtNodes::TypeConverterId;
-using QtNodes::Node;
-using QtNodes::PortType;
-using QtNodes::ConnectionID;
-using QtNodes::NodeDataModel;
-using QtNodes::NodePainterDelegate;
-using QtNodes::NodeDataType;
-using QtNodes::PortIndex;
-using QtNodes::ConnectionPolicy;
 using QtNodes::Connection;
+using QtNodes::ConnectionID;
+using QtNodes::ConnectionPolicy;
+using QtNodes::DataFlowModel;
+using QtNodes::DataModelRegistry;
+using QtNodes::Node;
+using QtNodes::NodeDataModel;
+using QtNodes::NodeDataType;
+using QtNodes::NodeIndex;
+using QtNodes::NodePainterDelegate;
+using QtNodes::NodeValidationState;
+using QtNodes::PortIndex;
+using QtNodes::PortType;
 using QtNodes::TypeConverter;
+using QtNodes::TypeConverterId;
 
-DataFlowModel::
-DataFlowModel(std::shared_ptr<DataModelRegistry> registry)
+DataFlowModel::DataFlowModel(std::shared_ptr<DataModelRegistry> registry)
   : _registry(std::move(registry))
-{
-}
+{}
 
 // FlowSceneModel read interface
 QStringList
-DataFlowModel::
-modelRegistry() const
+DataFlowModel::modelRegistry() const
 {
   QStringList list;
-  for (const auto& item : _registry->registeredModelCreators())
-  {
+  for (const auto& item : _registry->registeredModelCreators()) {
     list << item.first;
   }
   return list;
 }
 
 QString
-DataFlowModel::
-nodeTypeCategory(QString const& name) const
+DataFlowModel::nodeTypeCategory(QString const& name) const
 {
   auto iter = _registry->registeredModelsCategoryAssociation().find(name);
 
-  if (iter != _registry->registeredModelsCategoryAssociation().end())
-  {
+  if (iter != _registry->registeredModelsCategoryAssociation().end()) {
     return iter->second;
   }
   return {};
 }
 
 bool
-DataFlowModel::
-getTypeConvertable(TypeConverterId const& id) const
+DataFlowModel::getTypeConvertable(TypeConverterId const& id) const
 {
   return static_cast<bool>(_registry->getTypeConverter(id.first, id.second));
 }
 
-
-
 QList<QUuid>
-DataFlowModel::
-nodeUUids() const
+DataFlowModel::nodeUUids() const
 {
   QList<QUuid> ret;
 
@@ -69,15 +59,13 @@ nodeUUids() const
   std::transform(_nodes.begin(),
                  _nodes.end(),
                  std::back_inserter(ret),
-                 [](const auto& pair) {
-                   return pair.first;
-                 });
+                 [](const auto& pair) { return pair.first; });
 
   return ret;
 }
+
 NodeIndex
-DataFlowModel::
-nodeIndex(const QUuid& ID) const
+DataFlowModel::nodeIndex(const QUuid& ID) const
 {
   auto iter = _nodes.find(ID);
   if (iter == _nodes.end())
@@ -86,8 +74,7 @@ nodeIndex(const QUuid& ID) const
   return createIndex(ID, iter->second.get());
 }
 QString
-DataFlowModel::
-nodeTypeIdentifier(NodeIndex const& index) const
+DataFlowModel::nodeTypeIdentifier(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -96,8 +83,7 @@ nodeTypeIdentifier(NodeIndex const& index) const
   return node->nodeDataModel()->name();
 }
 QString
-DataFlowModel::
-nodeCaption(NodeIndex const& index) const
+DataFlowModel::nodeCaption(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -108,9 +94,9 @@ nodeCaption(NodeIndex const& index) const
 
   return node->nodeDataModel()->caption();
 }
+
 QPointF
-DataFlowModel::
-nodeLocation(NodeIndex const& index) const
+DataFlowModel::nodeLocation(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -119,8 +105,7 @@ nodeLocation(NodeIndex const& index) const
   return node->position();
 }
 QWidget*
-DataFlowModel::
-nodeWidget(NodeIndex const& index) const
+DataFlowModel::nodeWidget(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -129,8 +114,7 @@ nodeWidget(NodeIndex const& index) const
   return node->nodeDataModel()->embeddedWidget();
 }
 bool
-DataFlowModel::
-nodeResizable(NodeIndex const& index) const
+DataFlowModel::nodeResizable(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -139,8 +123,7 @@ nodeResizable(NodeIndex const& index) const
   return node->nodeDataModel()->resizable();
 }
 NodeValidationState
-DataFlowModel::
-nodeValidationState(NodeIndex const& index) const
+DataFlowModel::nodeValidationState(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -149,10 +132,8 @@ nodeValidationState(NodeIndex const& index) const
   return node->nodeDataModel()->validationState();
 }
 
-
 QString
-DataFlowModel::
-nodeValidationMessage(NodeIndex const& index) const
+DataFlowModel::nodeValidationMessage(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -161,10 +142,8 @@ nodeValidationMessage(NodeIndex const& index) const
   return node->nodeDataModel()->validationMessage();
 }
 
-
 NodePainterDelegate*
-DataFlowModel::
-nodePainterDelegate(NodeIndex const& index) const
+DataFlowModel::nodePainterDelegate(NodeIndex const& index) const
 {
   Q_ASSERT(index.isValid());
 
@@ -173,34 +152,32 @@ nodePainterDelegate(NodeIndex const& index) const
   return node->nodeDataModel()->painterDelegate();
 }
 
-
 unsigned int
-DataFlowModel::
-nodePortCount(NodeIndex const& index, PortType portType) const
+DataFlowModel::nodePortCount(NodeIndex const& index, PortType portType) const
 {
   Q_ASSERT(index.isValid());
 
-  auto* node = static_cast<Node*>(index.internalPointer());
+  auto* node = reinterpret_cast<Node*>(index.internalPointer());
 
   return node->nodeDataModel()->nPorts(portType);
 }
 
-
 QString
-DataFlowModel::
-nodePortCaption(NodeIndex const& index, PortIndex pIndex, PortType portType) const
+DataFlowModel::nodePortCaption(NodeIndex const& index,
+                               PortIndex pIndex,
+                               PortType portType) const
 {
   Q_ASSERT(index.isValid());
 
-  auto* node = static_cast<Node*>(index.internalPointer());
+  auto* node = reinterpret_cast<Node*>(index.internalPointer());
 
   return node->nodeDataModel()->portCaption(portType, pIndex);
 }
 
-
 NodeDataType
-DataFlowModel::
-nodePortDataType(NodeIndex const& index, PortIndex pIndex, PortType portType) const
+DataFlowModel::nodePortDataType(NodeIndex const& index,
+                                PortIndex pIndex,
+                                PortType portType) const
 {
   Q_ASSERT(index.isValid());
 
@@ -209,50 +186,50 @@ nodePortDataType(NodeIndex const& index, PortIndex pIndex, PortType portType) co
   return node->nodeDataModel()->dataType(portType, pIndex);
 }
 ConnectionPolicy
-DataFlowModel::
-nodePortConnectionPolicy(NodeIndex const& index, PortIndex pIndex, PortType portType) const
+DataFlowModel::nodePortConnectionPolicy(NodeIndex const& index,
+                                        PortIndex pIndex,
+                                        PortType portType) const
 {
   Q_ASSERT(index.isValid());
 
   auto* node = static_cast<Node*>(index.internalPointer());
 
-  if (portType == PortType::In)
-  {
+  if (portType == PortType::In) {
     return ConnectionPolicy::One;
   }
   return node->nodeDataModel()->portOutConnectionPolicy(pIndex);
 }
-std::vector<std::pair<NodeIndex, PortIndex> >
-DataFlowModel::
-nodePortConnections(NodeIndex const& index, PortIndex id, PortType portType) const
+
+std::vector<std::pair<NodeIndex, PortIndex>>
+DataFlowModel::nodePortConnections(NodeIndex const& index,
+                                   PortIndex id,
+                                   PortType portType) const
 {
+  std::vector<std::pair<NodeIndex, PortIndex>> ret;
   Q_ASSERT(index.isValid());
 
-  auto* node = static_cast<Node*>(index.internalPointer());
+  auto* node = reinterpret_cast<Node*>(index.internalPointer());
 
-  std::vector<std::pair<NodeIndex, PortIndex> > ret;
   // construct connections
-  for (const auto& conn : node->connections(portType, id))
-  {
-    ret.emplace_back(nodeIndex(conn->getNode(oppositePort(portType))->id()), conn->getPortIndex(oppositePort(portType)));
+  for (const auto& conn : node->connections(portType, id)) {
+    ret.emplace_back(nodeIndex(conn->getNode(oppositePort(portType))->id()),
+                     conn->getPortIndex(oppositePort(portType)));
   }
   return ret;
 }
 
 // FlowSceneModel write interface
 bool
-
-DataFlowModel::
-removeConnection(NodeIndex const& leftNodeIdx,
-                 PortIndex leftPortID,
-                 NodeIndex const& rightNodeIdx,
-                 PortIndex rightPortID)
+DataFlowModel::removeConnection(NodeIndex const& leftNodeIdx,
+                                PortIndex leftPortID,
+                                NodeIndex const& rightNodeIdx,
+                                PortIndex rightPortID)
 {
   Q_ASSERT(leftNodeIdx.isValid());
   Q_ASSERT(rightNodeIdx.isValid());
 
-  auto* leftNode  = static_cast<Node*>(leftNodeIdx.internalPointer());
-  auto* rightNode = static_cast<Node*>(rightNodeIdx.internalPointer());
+  auto* leftNode = reinterpret_cast<Node*>(leftNodeIdx.internalPointer());
+  auto* rightNode = reinterpret_cast<Node*>(rightNodeIdx.internalPointer());
 
   ConnectionID connID;
   connID.lNodeID = leftNodeIdx.id();
@@ -264,16 +241,17 @@ removeConnection(NodeIndex const& leftNodeIdx,
 
   // remove it from the nodes
   auto& leftConns = leftNode->connections(PortType::Out, leftPortID);
-  auto iter       = std::find_if(leftConns.begin(), leftConns.end(), [&](Connection* conn){
-                                   return conn->id() == connID;
-                                 });
+  auto iter =
+    std::find_if(leftConns.begin(), leftConns.end(), [&](Connection* conn) {
+      return conn->id() == connID;
+    });
   Q_ASSERT(iter != leftConns.end());
   leftConns.erase(iter);
 
   auto& rightConns = rightNode->connections(PortType::In, rightPortID);
-  iter = std::find_if(rightConns.begin(), rightConns.end(), [&](Connection* conn){
-                        return conn->id() == connID;
-                      });
+  iter = std::find_if(rightConns.begin(),
+                      rightConns.end(),
+                      [&](Connection* conn) { return conn->id() == connID; });
   Q_ASSERT(iter != rightConns.end());
   rightConns.erase(iter);
 
@@ -286,27 +264,23 @@ removeConnection(NodeIndex const& leftNodeIdx,
   return true;
 }
 
-
 bool
-
-DataFlowModel::
-addConnection(NodeIndex const& leftNodeIdx,
-              PortIndex leftPortID,
-              NodeIndex const& rightNodeIdx,
-              PortIndex rightPortID)
+DataFlowModel::addConnection(NodeIndex const& leftNodeIdx,
+                             PortIndex leftPortID,
+                             NodeIndex const& rightNodeIdx,
+                             PortIndex rightPortID)
 {
   Q_ASSERT(leftNodeIdx.isValid());
   Q_ASSERT(rightNodeIdx.isValid());
 
-  auto* leftNode  = static_cast<Node*>(leftNodeIdx.internalPointer());
+  auto* leftNode = static_cast<Node*>(leftNodeIdx.internalPointer());
   auto* rightNode = static_cast<Node*>(rightNodeIdx.internalPointer());
 
   // type conversions
   TypeConverter conv = {};
-  auto ltype         = nodePortDataType(leftNodeIdx, leftPortID, PortType::Out);
-  auto rtype         = nodePortDataType(rightNodeIdx, rightPortID, PortType::In);
-  if (ltype.id != rtype.id)
-  {
+  auto ltype = nodePortDataType(leftNodeIdx, leftPortID, PortType::Out);
+  auto rtype = nodePortDataType(rightNodeIdx, rightPortID, PortType::In);
+  if (ltype.id != rtype.id) {
     conv = _registry->getTypeConverter(ltype, rtype);
   }
 
@@ -315,10 +289,8 @@ addConnection(NodeIndex const& leftNodeIdx,
   return true;
 }
 
-
 bool
-DataFlowModel::
-removeNode(NodeIndex const& index)
+DataFlowModel::removeNode(NodeIndex const& index)
 {
   Q_ASSERT(index.isValid());
 
@@ -327,12 +299,12 @@ removeNode(NodeIndex const& index)
 
   auto* node = static_cast<Node*>(index.internalPointer());
 
-  for (auto idx = 0u; idx < node->nodeDataModel()->nPorts(PortType::In); ++idx)
-  {
+  for (auto idx = 0u; idx < node->nodeDataModel()->nPorts(PortType::In);
+       ++idx) {
     Q_ASSERT(node->connections(PortType::In, idx).empty());
   }
-  for (auto idx = 0u; idx < node->nodeDataModel()->nPorts(PortType::Out); ++idx)
-  {
+  for (auto idx = 0u; idx < node->nodeDataModel()->nPorts(PortType::Out);
+       ++idx) {
     Q_ASSERT(node->connections(PortType::Out, idx).empty());
   }
 #endif
@@ -346,33 +318,35 @@ removeNode(NodeIndex const& index)
   return true;
 }
 QUuid
-DataFlowModel::
-addNode(const QString& typeID, QPointF const& location)
+DataFlowModel::addNode(const QString& typeID, QPointF const& location)
 {
   auto nodeid = QUuid::createUuid();
   addNode(typeID, location, nodeid);
   return nodeid;
 }
+
 QUuid
-DataFlowModel::
-addNode(QString const& typeID, QPointF const& location, QUuid const& nodeid)
+DataFlowModel::addNode(QString const& typeID,
+                       QPointF const& location,
+                       QUuid const& nodeid)
 {
   // create the NodeDataModel
   auto model = _registry->create(typeID);
-  if (!model)
-  {
+  if (!model) {
     return {};
   }
   return addNode(std::move(model), location, nodeid);
 }
-QUuid
-DataFlowModel::
-addNode(std::unique_ptr<NodeDataModel>&& model, QPointF const& location, QUuid const& nodeid)
-{
 
-  connect(model.get(), &NodeDataModel::dataUpdated, this, [this, nodeid](PortIndex){
-            emit nodeValidationUpdated(nodeIndex(nodeid));
-          });
+QUuid
+DataFlowModel::addNode(std::unique_ptr<NodeDataModel>&& model,
+                       QPointF const& location,
+                       QUuid const& nodeid)
+{
+  connect(
+    model.get(), &NodeDataModel::dataUpdated, this, [this, nodeid](PortIndex) {
+      emit nodeValidationUpdated(nodeIndex(nodeid));
+    });
 
   // create a node
   auto node = std::make_unique<Node>(std::move(model), nodeid);
@@ -386,9 +360,10 @@ addNode(std::unique_ptr<NodeDataModel>&& model, QPointF const& location, QUuid c
   _nodes[nodeid] = std::move(node);
 
   // connect to the geometry gets updated
-  connect(nodePtr, &Node::positionChanged, this, [this, nodeid](QPointF const&){
-            emit nodeMoved(nodeIndex(nodeid));
-          });
+  connect(
+    nodePtr, &Node::positionChanged, this, [this, nodeid](QPointF const&) {
+      emit nodeMoved(nodeIndex(nodeid));
+    });
 
   // tell the view
   emit nodeAdded(nodeid);
@@ -396,10 +371,12 @@ addNode(std::unique_ptr<NodeDataModel>&& model, QPointF const& location, QUuid c
   return nodeid;
 }
 
-
 ConnectionID
-DataFlowModel::
-addConnection(Node* leftNode, PortIndex leftPortID, Node* rightNode, PortIndex rightPortID, TypeConverter conv)
+DataFlowModel::addConnection(Node* leftNode,
+                             PortIndex leftPortID,
+                             Node* rightNode,
+                             PortIndex rightPortID,
+                             TypeConverter conv)
 {
 
   ConnectionID connID;
@@ -409,7 +386,8 @@ addConnection(Node* leftNode, PortIndex leftPortID, Node* rightNode, PortIndex r
   connID.rPortID = rightPortID;
 
   // create the connection
-  auto conn = std::make_shared<Connection>(*rightNode, rightPortID, *leftNode, leftPortID, conv);
+  auto conn = std::make_shared<Connection>(
+    *rightNode, rightPortID, *leftNode, leftPortID, conv);
   _connections[connID] = conn;
 
   // add it to the nodes
@@ -417,17 +395,20 @@ addConnection(Node* leftNode, PortIndex leftPortID, Node* rightNode, PortIndex r
   rightNode->connections(PortType::In, rightPortID).push_back(conn.get());
 
   // process data
-  conn->getNode(PortType::Out)->onDataUpdated(conn->getPortIndex(PortType::Out));
+  conn->getNode(PortType::Out)
+    ->onDataUpdated(conn->getPortIndex(PortType::Out));
 
   // tell the view the connection was added
-  emit connectionAdded(nodeIndex(leftNode->id()), leftPortID, nodeIndex(rightNode->id()), rightPortID);
+  emit connectionAdded(nodeIndex(leftNode->id()),
+                       leftPortID,
+                       nodeIndex(rightNode->id()),
+                       rightPortID);
 
   return connID;
 }
 
 bool
-DataFlowModel::
-moveNode(NodeIndex const& index, QPointF newLocation)
+DataFlowModel::moveNode(NodeIndex const& index, QPointF newLocation)
 {
   Q_ASSERT(index.isValid());
 

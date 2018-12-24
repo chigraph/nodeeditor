@@ -3,10 +3,10 @@
 #include <iostream>
 
 #include <QtCore/QFile>
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValueRef>
-#include <QtCore/QJsonArray>
 
 #include <QDebug>
 
@@ -15,77 +15,75 @@
 using QtNodes::NodeStyle;
 
 inline void
-initResources() { Q_INIT_RESOURCE(resources); }
+initResources()
+{
+  Q_INIT_RESOURCE(resources);
+}
 
-NodeStyle::
-NodeStyle()
+NodeStyle::NodeStyle()
 {
   // Explicit resources inialization for preventing the static initialization
   // order fiasco: https://isocpp.org/wiki/faq/ctors#static-init-order
   initResources();
 
-  // This configuration is stored inside the compiled unit and is loaded statically
+  // This configuration is stored inside the compiled unit and is loaded
+  // statically
   loadJsonFile(":DefaultStyle.json");
 }
 
-
-NodeStyle::
-NodeStyle(QString jsonText)
+NodeStyle::NodeStyle(QString jsonText)
 {
   loadJsonText(jsonText);
 }
 
-
 void
-NodeStyle::
-setNodeStyle(QString jsonText)
+NodeStyle::setNodeStyle(QString jsonText)
 {
   NodeStyle style(jsonText);
-
 
   StyleCollection::setNodeStyle(style);
 }
 
-
 #ifdef STYLE_DEBUG
-  #define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable) { \
-    if (v.type() == QJsonValue::Undefined || \
-        v.type() == QJsonValue::Null) \
-      qWarning() << "Undefined value for parameter:" << #variable; \
-}
+#define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)                          \
+  {                                                                            \
+    if (v.type() == QJsonValue::Undefined || v.type() == QJsonValue::Null)     \
+      qWarning() << "Undefined value for parameter:" << #variable;             \
+  }
 #else
-  #define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)
+#define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)
 #endif
 
-#define NODE_STYLE_READ_COLOR(values, variable)  { \
-    auto valueRef = values[#variable]; \
-    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable) \
-    if (valueRef.isArray()) { \
-      auto colorArray = valueRef.toArray(); \
-      std::vector<int> rgb; rgb.reserve(3); \
-      for (auto it = colorArray.begin(); it != colorArray.end(); ++it) { \
-        rgb.push_back((*it).toInt()); \
-      } \
-      variable = QColor(rgb[0], rgb[1], rgb[2]); \
-    } else { \
-      variable = QColor(valueRef.toString()); \
-    } \
-}
+#define NODE_STYLE_READ_COLOR(values, variable)                                \
+  {                                                                            \
+    auto valueRef = values[#variable];                                         \
+    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable)                       \
+    if (valueRef.isArray()) {                                                  \
+      auto colorArray = valueRef.toArray();                                    \
+      std::vector<int> rgb;                                                    \
+      rgb.reserve(3);                                                          \
+      for (auto it = colorArray.begin(); it != colorArray.end(); ++it) {       \
+        rgb.push_back((*it).toInt());                                          \
+      }                                                                        \
+      variable = QColor(rgb[0], rgb[1], rgb[2]);                               \
+    } else {                                                                   \
+      variable = QColor(valueRef.toString());                                  \
+    }                                                                          \
+  }
 
-#define NODE_STYLE_READ_FLOAT(values, variable)  { \
-    auto valueRef = values[#variable]; \
-    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable) \
-    variable = valueRef.toDouble(); \
-}
+#define NODE_STYLE_READ_FLOAT(values, variable)                                \
+  {                                                                            \
+    auto valueRef = values[#variable];                                         \
+    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable)                       \
+    variable = valueRef.toDouble();                                            \
+  }
 
 void
-NodeStyle::
-loadJsonFile(QString styleFile)
+NodeStyle::loadJsonFile(QString styleFile)
 {
   QFile file(styleFile);
 
-  if (!file.open(QIODevice::ReadOnly))
-  {
+  if (!file.open(QIODevice::ReadOnly)) {
     qWarning() << "Couldn't open file " << styleFile;
 
     return;
@@ -94,18 +92,14 @@ loadJsonFile(QString styleFile)
   loadJsonFromByteArray(file.readAll());
 }
 
-
 void
-NodeStyle::
-loadJsonText(QString jsonText)
+NodeStyle::loadJsonText(QString jsonText)
 {
   loadJsonFromByteArray(jsonText.toUtf8());
 }
 
-
 void
-NodeStyle::
-loadJsonFromByteArray(QByteArray const &byteArray)
+NodeStyle::loadJsonFromByteArray(QByteArray const& byteArray)
 {
   QJsonDocument json(QJsonDocument::fromJson(byteArray));
 

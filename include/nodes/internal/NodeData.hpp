@@ -4,8 +4,7 @@
 
 #include "Export.hpp"
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 struct NodeDataType
 {
@@ -19,18 +18,14 @@ struct NodeDataType
 class NODE_EDITOR_PUBLIC NodeData
 {
 public:
+  virtual ~NodeData() = default;
 
-  virtual
-  ~NodeData() = default;
-
-  virtual bool
-  sameType(NodeData const &nodeData) const
+  virtual bool sameType(NodeData const& nodeData) const
   {
     return (this->type().id == nodeData.type().id);
   }
 
   /// Type for inner use
-  virtual NodeDataType
-  type() const = 0;
+  virtual NodeDataType type() const = 0;
 };
 }

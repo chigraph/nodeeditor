@@ -5,67 +5,47 @@
 #include "Export.hpp"
 #include "Style.hpp"
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 class NODE_EDITOR_PUBLIC ConnectionStyle : public Style
 {
 public:
-
   ConnectionStyle();
 
   ConnectionStyle(QString jsonText);
 
 public:
-
-  static void
-  setConnectionStyle(QString jsonText);
+  static void setConnectionStyle(QString jsonText);
 
 private:
+  void loadJsonText(QString jsonText) override;
 
-  void
-  loadJsonText(QString jsonText) override;
+  void loadJsonFile(QString fileName) override;
 
-  void
-  loadJsonFile(QString fileName) override;
-
-  void
-  loadJsonFromByteArray(QByteArray const &byteArray) override;
+  void loadJsonFromByteArray(QByteArray const& byteArray) override;
 
 public:
+  QColor constructionColor() const;
 
-  QColor
-  constructionColor() const;
+  QColor normalColor() const;
 
-  QColor
-  normalColor() const;
+  QColor normalColor(QString typeId) const;
 
-  QColor
-  normalColor(QString typeId) const;
+  QColor selectedColor() const;
 
-  QColor
-  selectedColor() const;
+  QColor selectedHaloColor() const;
 
-  QColor
-  selectedHaloColor() const;
+  QColor hoveredColor() const;
 
-  QColor
-  hoveredColor() const;
+  float lineWidth() const;
 
-  float
-  lineWidth() const;
+  float constructionLineWidth() const;
 
-  float
-  constructionLineWidth() const;
+  float pointDiameter() const;
 
-  float
-  pointDiameter() const;
-
-  bool
-  useDataDefinedColors() const;
+  bool useDataDefinedColors() const;
 
 private:
-
   QColor ConstructionColor;
   QColor NormalColor;
   QColor SelectedColor;

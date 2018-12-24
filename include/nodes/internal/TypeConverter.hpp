@@ -5,13 +5,11 @@
 
 #include <functional>
 
-namespace QtNodes
-{
+namespace QtNodes {
 
 using SharedNodeData = std::shared_ptr<NodeData>;
 
 // a function taking in NodeData and returning NodeData
-using TypeConverter =
-  std::function<SharedNodeData(SharedNodeData)>;
+using TypeConverter = std::function<SharedNodeData(SharedNodeData)>;
 
 }
